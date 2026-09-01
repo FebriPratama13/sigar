@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>Detail Laporan SIGAR</title>
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+rel="stylesheet">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+rel="stylesheet">
+
+<style>
+
+*{
+box-sizing:border-box;
+}
+
+body{
+
+margin:0;
+
+padding:30px;
+
+background:#edf2f5;
+
+font-family:'Times New Roman',Times,serif;
+
+color:#1a1a1a;
+
+font-size:14px;
+
+}
+
+
+/* ==========================
+A4
+========================== */
+
+.paper{
+
+width:210mm;
+
+min-height:297mm;
+
+margin:auto;
+
+background:#fff;
+
+padding:25mm;
+
+box-shadow:0 0 20px rgba(0,0,0,.15);
+
+border-radius:8px;
+
+}
+
+
+/* ==========================
+HEADER (KOP SURAT)
+========================== */
+
+.header{
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+gap:22px;
+
+padding-bottom:16px;
+
+border-bottom:3px solid #0f766e;
+
+margin-bottom:3px;
+
+position:relative;
+
+}
+
+.header::after{
+
+content:'';
+
+display:block;
+
+position:absolute;
+
+left:0;
+
+right:0;
+
+bottom:-6px;
+
+height:1px;
+
+background:#0f766e;
+
+}
+
+.logo{
+
+display:flex;
+
+align-items:center;
+
+flex-shrink:0;
+
+}
+
+.logo-circle{
+
+width:78px;
+
+height:78px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+overflow:hidden;
+
+}
+
+.logo-circle img{
+
+width:100%;
+
+height:100%;
+
+object-fit:contain;
+
+}
+
+.header-title{
+
+text-align:center;
+
+flex:1;
+
+}
+
+.header-title h3{
+
+margin:0;
+
+font-size:18px;
+
+font-weight:bold;
+
+letter-spacing:.3px;
+
+text-transform:uppercase;
+
+}
+
+.header-title h4{
+
+margin:4px 0 2px;
+
+font-size:15px;
+
+font-weight:bold;
+
+color:#0f766e;
+
+letter-spacing:.2px;
+
+}
+
+.header-title small{
+
+color:#444;
+
+font-size:13px;
+
+}
+
+
+/* ==========================
+DOC META ROW (NOMOR DOKUMEN & STATUS)
+========================== */
+
+.doc-meta-row{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:flex-end;
+
+padding:14px 2px 18px;
+
+margin-bottom:6px;
+
+font-family:Arial,Helvetica,sans-serif;
+
+}
+
+.doc-meta-label{
+
+font-size:11px;
+
+text-transform:uppercase;
+
+letter-spacing:.4px;
+
+color:#888;
+
+}
+
+.status-box{
+
+text-align:right;
+
+}
+
+.status-label{
+
+font-size:11px;
+
+text-transform:uppercase;
+
+letter-spacing:.4px;
+
+color:#888;
+
+}
+
+.status-badge{
+
+display:inline-block;
+
+padding:7px 16px;
+
+border-radius:5px;
+
+font-size:13px;
+
+font-weight:bold;
+
+margin-top:4px;
+
+}
+
+
+/* ==========================
+SECTION
+========================== */
+
+.section{
+
+margin-top:28px;
+
+}
+
+.section-title{
+
+background:#f0f4f3;
+
+color:#0f766e;
+
+padding:9px 4px;
+
+font-weight:bold;
+
+border-bottom:2px solid #0f766e;
+
+margin-bottom:12px;
+
+font-size:13.5px;
+
+text-transform:uppercase;
+
+letter-spacing:.4px;
+
+font-family:Arial,Helvetica,sans-serif;
+
+}
+
+
+/* ==========================
+TABLE
+========================== */
+
+.detail-table{
+
+width:100%;
+
+border-collapse:collapse;
+
+}
+
+.detail-table tr{
+
+border-bottom:1px solid #e7e7e7;
+
+}
+
+.detail-table th{
+
+width:210px;
+
+padding:9px 4px;
+
+vertical-align:top;
+
+background:transparent;
+
+font-weight:bold;
+
+font-family:Arial,Helvetica,sans-serif;
+
+font-size:13px;
+
+}
+
+.detail-table td{
+
+font-family:Arial,Helvetica,sans-serif;
+
+font-size:13px;
+
+padding:11px;
+
+vertical-align:top;
+
+}
+
+
+/* ==========================
+LONG TEXT
+========================== */
+
+.long-text{
+
+border:1px solid #d8dee3;
+
+padding:18px;
+
+border-radius:6px;
+
+line-height:1.8;
+
+white-space:pre-wrap;
+
+background:#fcfcfc;
+
+}
+
+
+/* ==========================
+IMAGE
+========================== */
+
+.image-box{
+
+border:1px dashed #bbb;
+
+padding:15px;
+
+border-radius:8px;
+
+text-align:center;
+
+background:#fafafa;
+
+}
+
+.image-box img{
+
+max-width:100%;
+
+max-height:500px;
+
+border-radius:6px;
+
+}
+
+
+/* ==========================
+TIMELINE
+========================== */
+
+.timeline{
+
+position:relative;
+
+padding-left:35px;
+
+}
+
+.timeline:before{
+
+content:'';
+
+position:absolute;
+
+left:12px;
+
+top:0;
+
+bottom:0;
+
+width:3px;
+
+background:#0f766e;
+
+}
+
+.timeline-item{
+
+position:relative;
+
+margin-bottom:25px;
+
+}
+
+.timeline-item:before{
+
+content:'';
+
+position:absolute;
+
+left:-29px;
+
+top:4px;
+
+width:16px;
+
+height:16px;
+
+border-radius:50%;
+
+background:#0f766e;
+
+}
+
+.timeline-date{
+
+font-size:13px;
+
+color:#777;
+
+margin-bottom:5px;
+
+}
+
+.timeline-body{
+
+background:#f8f9fa;
+
+padding:14px;
+
+border-radius:6px;
+
+}
+
+
+/* ==========================
+BUTTONS
+========================== */
+
+.toolbar{
+
+width:210mm;
+
+margin:0 auto 20px;
+
+display:flex;
+
+justify-content:space-between;
+
+}
+
+.btn{
+
+border-radius:8px;
+
+padding:10px 18px;
+
+}
+
+
+/* ==========================
+FOOTER
+========================== */
+
+.footer{
+
+margin-top:45px;
+
+padding-top:20px;
+
+border-top:1px solid #ccc;
+
+display:flex;
+
+justify-content:space-between;
+
+font-size:13px;
+
+color:#555;
+
+}
+
+
+/* ==========================
+PRINT
+========================== */
+
+@page{
+
+size:A4;
+
+margin:12mm;
+
+}
+
+@media print{
+
+body{
+
+background:white;
+
+padding:0;
+
+}
+
+.toolbar{
+
+display:none;
+
+}
+
+.paper{
+
+width:100%;
+
+min-height:auto;
+
+box-shadow:none;
+
+border-radius:0;
+
+padding:0;
+
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<!-- ==========================
+TOOLBAR
+========================== -->
+
+<div class="toolbar">
+
+<div>
+
+<button
+class="btn btn-secondary"
+onclick="history.back()">
+
+<i class="bi bi-arrow-left"></i>
+
+Kembali
+
+</button>
+
+</div>
+
+<div>
+
+<button
+class="btn btn-success"
+onclick="window.print()">
+
+<i class="bi bi-printer"></i>
+
+Print
+
+</button>
+
+</div>
+
+</div>
+
+
+
+<!-- ==========================
+PAPER
+========================== -->
+
+<div class="paper">
+
+
+
+<!-- HEADER (KOP SURAT) -->
+
+<div class="header">
+
+<div class="logo">
+
+<div class="logo-circle">
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/d/dc/Lambang_Kabupaten_Banyumas.png" alt="Logo Dinkes">
+
+</div>
+
+</div>
+
+<div class="header-title">
+
+<h3>
+
+DINAS KESEHATAN DAN KELUARGA BERENCANA
+
+</h3>
+
+<h4>
+
+SISTEM INFORMASI ANTI GRATIFIKASI RESPONSIF
+
+</h4>
+
+<small>
+
+Kabupaten Banyumas
+
+</small>
+
+</div>
+
+</div>
+
+<!-- BARIS DOKUMEN & STATUS -->
+
+<div class="doc-meta-row">
+
+<div>
+
+<span class="doc-meta-label">Nomor Dokumen</span><br>
+
+<strong id="noLaporanMeta">-</strong>
+
+</div>
+
+<div class="status-box">
+
+<div class="status-label">
+
+STATUS LAPORAN
+
+</div>
+
+<div
+id="statusBadge"
+class="status-badge bg-warning text-dark">
+
+Belum Terverifikasi
+
+</div>
+
+</div>
+
+</div>
+<!-- =========================================
+IDENTITAS LAPORAN
+========================================= -->
+
+<div class="section">
+
+<div class="section-title">
+
+INFORMASI LAPORAN
+
+</div>
+
+<table class="detail-table">
+
+<tr>
+
+<th>Nomor Laporan</th>
+
+<td id="noLaporan">-</td>
+
+</tr>
+
+<tr>
+
+<th>Tanggal Laporan</th>
+
+<td id="tanggalLaporan">-</td>
+
+</tr>
+
+<tr>
+
+<th>Status</th>
+
+<td>
+
+<span
+id="statusText"
+class="badge bg-warning text-dark">
+
+Belum Terverifikasi
+
+</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<th>Jenis Gratifikasi</th>
+
+<td id="jenisGratifikasi">-</td>
+
+</tr>
+
+</table>
+
+</div>
+
+
+
+<!-- =========================================
+IDENTITAS PELAPOR
+========================================= -->
+
+<div class="section">
+
+<div class="section-title">
+
+IDENTITAS PELAPOR
+
+</div>
+
+<table class="detail-table">
+
+<tr>
+
+<th>Nama Pelapor</th>
+
+<td id="namaPelapor">-</td>
+
+</tr>
+
+<tr>
+
+<th>Instansi</th>
+
+<td id="instansi">-</td>
+
+</tr>
+
+<tr>
+
+<th>Jabatan</th>
+
+<td id="jabatan">-</td>
+
+</tr>
+
+<tr>
+
+<th>No. Telepon</th>
+
+<td id="telepon">-</td>
+
+</tr>
+
+<tr>
+
+<th>Email</th>
+
+<td id="email">-</td>
+
+</tr>
+
+<tr>
+
+<th>Mode Pelaporan</th>
+
+<td id="anonim">-</td>
+
+</tr>
+
+</table>
+
+</div>
+
+
+
+<!-- =========================================
+DETAIL GRATIFIKASI
+========================================= -->
+
+<div class="section">
+
+<div class="section-title">
+
+DETAIL GRATIFIKASI
+
+</div>
+
+<table class="detail-table">
+
+<tr>
+
+<th>Tanggal Kejadian</th>
+
+<td id="tanggalKejadian">-</td>
+
+</tr>
+
+<tr>
+
+<th>Lokasi Kejadian</th>
+
+<td id="lokasiKejadian">-</td>
+
+</tr>
+
+<tr>
+
+<th>Pihak Pemberi</th>
+
+<td id="pihakPemberi">-</td>
+
+</tr>
+
+<tr>
+
+<th>Nilai Estimasi</th>
+
+<td id="nilaiEstimasi">-</td>
+
+</tr>
+
+</table>
+
+</div>
+
+
+
+<!-- =========================================
+URAIAN
+========================================= -->
+
+<div class="section">
+
+<div class="section-title">
+
+URAIAN GRATIFIKASI
+
+</div>
+
+<div
+id="uraian"
+class="long-text">
+
+-
+
+</div>
+
+</div>
+
+
+
+<!-- =========================================
+KRONOLOGI
+========================================= -->
+
+<div class="section">
+
+<div class="section-title">
+
+KRONOLOGI KEJADIAN
+
+</div>
+
+<div
+id="kronologi"
+class="long-text">
+
+-
+
+</div>
+
+</div>
+
+
+
+<!-- =========================================
+LAMPIRAN
+========================================= -->
+
+<div class="section">
+
+<div class="section-title">
+
+LAMPIRAN BUKTI
+
+</div>
+
+<div
+id="lampiranContainer"
+class="image-box">
+
+<i class="bi bi-image fs-1 text-secondary"></i>
+
+<br><br>
+
+Belum ada lampiran.
+
+</div>
+
+</div>
+
+
+
+<!-- =========================================
+RIWAYAT TINDAK LANJUT
+========================================= -->
+
+<div class="section">
+
+<div class="section-title">
+
+RIWAYAT TINDAK LANJUT
+
+</div>
+
+<div
+id="timeline"
+class="timeline">
+
+<div class="timeline-item">
+
+<div class="timeline-date">
+
+-
+
+</div>
+
+<div class="timeline-body">
+
+Belum ada tindak lanjut.
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- =========================================
+FOOTER
+========================================= -->
+
+<div class="footer">
+
+<div>
+
+<strong>
+
+SIGAR
+
+</strong>
+
+<br>
+
+Sistem Informasi Anti Gratifikasi Responsif
+
+</div>
+
+<div style="text-align:right">
+
+Dicetak :
+
+<span id="tanggalCetak">
+
+-
+
+</span>
+
+<br>
+
+Operator :
+
+<span id="operator">
+
+-
+
+</span>
+
+</div>
+
+</div>
+
+</div>
+<script>
+
+
+
+const NO_LAPORAN = "<?= no ?>";
+
+
+window.onload = function(){
+
+    if(!NO_LAPORAN){
+
+        alert("Nomor laporan tidak ditemukan.");
+
+        return;
+
+    }
+
+    loadDetail();
+
+}
+
+
+
+/* ==========================================
+LOAD DATA
+========================================== */
+
+function loadDetail(){
+
+google.script.run
+
+.withSuccessHandler(renderDetail)
+
+.withFailureHandler(function(err){
+
+alert(err.message);
+
+})
+
+.getDetailLaporan(NO_LAPORAN);
+
+}
+
+
+
+/* ==========================================
+RENDER DATA
+========================================== */
+
+function renderDetail(data){
+
+if(!data){
+
+alert("Data tidak ditemukan.");
+
+return;
+
+}
+
+
+/* ----------------------------
+Informasi Laporan
+---------------------------- */
+
+setText(
+"noLaporan",
+data.noLaporan
+);
+
+setText(
+"noLaporanMeta",
+data.noLaporan
+);
+
+setText(
+"tanggalLaporan",
+data.tanggal
+);
+
+setText(
+"jenisGratifikasi",
+data.jenis
+);
+
+
+
+/* ----------------------------
+Identitas
+---------------------------- */
+
+setText(
+"namaPelapor",
+data.nama
+);
+
+setText(
+"instansi",
+data.instansi
+);
+
+setText(
+"jabatan",
+data.jabatan
+);
+
+setText(
+"telepon",
+data.noTelepon
+);
+
+setText(
+"email",
+data.email
+);
+
+setText(
+"anonim",
+data.anonim
+?
+"Ya"
+:
+"Tidak"
+);
+
+
+
+/* ----------------------------
+Detail Gratifikasi
+---------------------------- */
+
+setText(
+"tanggalKejadian",
+data.tanggalKejadian
+);
+
+setText(
+"lokasiKejadian",
+data.lokasiKejadian
+);
+
+setText(
+"pihakPemberi",
+data.pihakPemberi
+);
+
+setText(
+"nilaiEstimasi",
+formatRupiah(
+data.nilaiEstimasi
+)
+);
+
+
+
+/* ----------------------------
+Narasi
+---------------------------- */
+
+setText(
+"uraian",
+data.uraian
+);
+
+setText(
+"kronologi",
+data.kronologi
+);
+
+
+
+/* ----------------------------
+Status
+---------------------------- */
+
+renderStatus(
+data.status
+);
+
+
+
+/* ----------------------------
+Lampiran
+---------------------------- */
+
+renderLampiran(
+data
+);
+
+
+
+/* ----------------------------
+Timeline
+---------------------------- */
+
+renderTimeline(
+data
+);
+
+
+
+/* ----------------------------
+Footer
+---------------------------- */
+
+setText(
+"operator",
+data.petugas || "-"
+);
+
+setText(
+"tanggalCetak",
+new Date().toLocaleString("id-ID")
+);
+
+}
+
+
+
+/* ==========================================
+SET TEXT
+========================================== */
+
+function setText(id,value){
+
+document
+.getElementById(id)
+.innerHTML =
+value || "-";
+
+}
+
+
+
+/* ==========================================
+STATUS
+========================================== */
+
+function renderStatus(status){
+
+const badge=
+
+document.getElementById(
+"statusBadge"
+);
+
+const text=
+
+document.getElementById(
+"statusText"
+);
+
+badge.className="status-badge";
+
+text.className="badge";
+
+badge.innerHTML=status;
+
+text.innerHTML=status;
+
+
+switch(status){
+
+case "Terverifikasi":
+
+badge.classList.add(
+"bg-success",
+"text-white"
+);
+
+text.classList.add(
+"bg-success"
+);
+
+break;
+
+case "Ditolak":
+
+badge.classList.add(
+"bg-danger",
+"text-white"
+);
+
+text.classList.add(
+"bg-danger"
+);
+
+break;
+
+default:
+
+badge.classList.add(
+"bg-warning",
+"text-dark"
+);
+
+text.classList.add(
+"bg-warning",
+"text-dark"
+);
+
+}
+
+}
+
+
+
+/* ==========================================
+FORMAT RUPIAH
+========================================== */
+
+function formatRupiah(nilai){
+
+if(!nilai) return "-";
+
+return "Rp " +
+
+Number(nilai)
+
+.toLocaleString("id-ID");
+
+}
+/* ==========================================
+RENDER LAMPIRAN
+========================================== */
+
+function renderLampiran(data){
+
+const container =
+document.getElementById(
+"lampiranContainer"
+);
+
+container.innerHTML = "";
+
+if(!data.bukti){
+
+container.innerHTML=
+
+'<i class="bi bi-image fs-1 text-secondary"></i>'+
+
+'<br><br>'+
+
+'Belum ada lampiran.';
+
+return;
+
+}
+
+const file =
+data.bukti.toLowerCase();
+
+
+
+/* ======================
+GAMBAR
+====================== */
+
+if(
+
+file.endsWith(".jpg") ||
+
+file.endsWith(".jpeg") ||
+
+file.endsWith(".png") ||
+
+file.endsWith(".gif") ||
+
+file.endsWith(".webp")
+
+){
+
+container.innerHTML=
+
+'<img src="'+
+
+data.bukti+
+
+'" class="img-fluid">'+
+
+'<br><br>'+
+
+'<a href="'+
+
+data.bukti+
+
+'" target="_blank" class="btn btn-primary">'+
+
+'<i class="bi bi-arrows-fullscreen"></i> Lihat Ukuran Penuh'+
+
+'</a>';
+
+return;
+
+}
+
+
+
+/* ======================
+PDF
+====================== */
+
+if(file.endsWith(".pdf")){
+
+container.innerHTML=
+
+'<i class="bi bi-file-earmark-pdf text-danger" style="font-size:90px"></i>'+
+
+'<br><br>'+
+
+'<a href="'+
+
+data.bukti+
+
+'" target="_blank" class="btn btn-danger">'+
+
+'<i class="bi bi-file-earmark-pdf"></i> Buka PDF'+
+
+'</a>';
+
+return;
+
+}
+
+
+
+/* ======================
+FILE LAIN
+====================== */
+
+container.innerHTML=
+
+'<i class="bi bi-paperclip fs-1"></i>'+
+
+'<br><br>'+
+
+'<a href="'+
+
+data.bukti+
+
+'" target="_blank" class="btn btn-secondary">'+
+
+'Download Lampiran'+
+
+'</a>';
+
+}
+
+
+
+
+
+/* ==========================================
+TIMELINE
+========================================== */
+
+function renderTimeline(data){
+
+const timeline=
+
+document.getElementById(
+"timeline"
+);
+
+timeline.innerHTML="";
+
+
+
+if(
+
+!data.riwayat ||
+
+data.riwayat.length==0
+
+){
+
+timeline.innerHTML=
+
+'<div class="timeline-item">'+
+
+'<div class="timeline-date">-</div>'+
+
+'<div class="timeline-body">'+
+
+'Belum ada tindak lanjut.'+
+
+'</div>'+
+
+'</div>';
+
+return;
+
+}
+
+
+
+data.riwayat.forEach(function(item){
+
+timeline.innerHTML +=
+
+'<div class="timeline-item">'+
+
+'<div class="timeline-date">'+
+
+item.tanggal+
+
+'</div>'+
+
+'<div class="timeline-body">'+
+
+'<strong>Status :</strong> '+
+
+item.status+
+
+'<br><br>'+
+
+'<strong>Petugas :</strong> '+
+
+item.petugas+
+
+'<br><br>'+
+
+'<strong>Catatan :</strong><br>'+
+
+item.catatan+
+
+'</div>'+
+
+'</div>';
+
+});
+
+}
+
+
+
+
+
+/* ==========================================
+PRINT TITLE
+========================================== */
+
+document.title=
+
+"Detail Laporan - "+
+
+NO_LAPORAN;
+
+</script>
+
+
+</body>
+
+</html>

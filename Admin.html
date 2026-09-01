@@ -1,0 +1,4428 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>SIGAR</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+rel="stylesheet">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<style>
+
+:root{
+  --brand-green: #37a25c;
+  --brand-green-dark: #2c8a4d;
+  --brand-green-soft: #e6f4ea;
+}
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+font-family:Arial,Helvetica,sans-serif;
+background:#f4f7f9;
+color:#17323a;
+}
+
+.hidden{
+display:none!important;
+}
+
+
+/* =========================================
+   LOGIN (ALTERNATIF: SECURE PORTAL)
+========================================= */
+/* =========================================
+   LOGIN — DESAIN BARU (2 KOLOM)
+========================================= */
+#loginPage {
+    min-height: 100vh;
+    background: #ffffff;
+    font-family: 'Plus Jakarta Sans', Arial, sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+#loginPage::before,
+#loginPage::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(55,162,92,0.14) 0%, transparent 70%);
+    z-index: 0;
+}
+#loginPage::before { top: -12%; left: -8%; width: 45%; height: 55%; }
+#loginPage::after { bottom: -15%; right: -8%; width: 40%; height: 50%; }
+
+.login-topnav{
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 5%;
+    border-bottom: 1px solid #eef2f1;
+}
+.login-brand{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.login-brand-icon{
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: #37a25c;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.login-brand-icon img{ width: 100%; height: 100%; object-fit: contain; }
+.login-brand h5{ margin: 0; font-weight: 800; font-size: 19px; color: #0d2420; }
+.login-brand small{ color: #6c757d; font-size: 12px; }
+.login-topnav-label{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #5c6b6d;
+    font-weight: 600;
+    font-size: 14.5px;
+}
+.login-topnav-label i{ font-size: 20px; color: #37a25c; }
+
+.login-grid{
+    position: relative;
+    z-index: 1;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 60px 5% 40px;
+    display: grid;
+    grid-template-columns: 1.05fr .95fr;
+    gap: 50px;
+    align-items: center;
+}
+
+.login-illustration-col{ text-align: left; }
+.login-illustration-img{
+    max-width: 560px;
+    margin-bottom: 10px;
+}
+.login-illustration-img img{
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
+.login-hero-title{
+    font-size: 42px;
+    font-weight: 900;
+    color: #37a25c;
+    margin: 10px 0 2px;
+    letter-spacing: -1px;
+}
+.login-hero-subtitle{
+    font-size: 24px;
+    font-weight: 800;
+    color: #0d2420;
+    line-height: 1.25;
+    margin: 0 0 12px;
+}
+.login-hero-underline{
+    display: block;
+    width: 46px;
+    height: 4px;
+    background: #37a25c;
+    border-radius: 3px;
+    margin-bottom: 16px;
+}
+.login-hero-desc{
+    color: #5c6b6d;
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 380px;
+}
+
+.login-card-col{ display: flex; flex-direction: column; align-items: center; }
+
+.login-box {
+    width: 100%;
+    max-width: 460px;
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 45px 40px;
+    box-shadow: 0 24px 60px rgba(0, 40, 30, 0.12);
+    border: 1px solid #f0f3f2;
+}
+.login-logo { text-align: center; margin-bottom: 30px; }
+.login-icon-circle{
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #e3f8eb;
+    color: #37a25c;
+    font-size: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+}
+.login-logo h2 {
+    font-weight: 800;
+    color: #0d2420;
+    margin-bottom: 4px;
+    font-size: 22px;
+    letter-spacing: -0.3px;
+}
+.login-logo p {
+    color: #5c6b6d;
+    font-size: 14px;
+    margin-bottom: 0;
+}
+.login-box .form-label {
+    font-weight: 700;
+    color: #0d2420;
+    font-size: 13.5px;
+    margin-bottom: 8px;
+}
+.login-input-wrap{ position: relative; }
+.login-input-wrap > i:first-child{
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #8a9a9d;
+    font-size: 16px;
+}
+.login-box .form-control {
+    padding: 14px 16px 14px 42px;
+    border-radius: 12px;
+    border: 1.5px solid #e2e9e6;
+    font-size: 14.5px;
+    transition: all 0.2s ease;
+    background: #f9fbfa;
+    color: #17323a;
+}
+.login-box .form-control:focus {
+    border-color: #37a25c;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(55, 162, 92, 0.12);
+}
+.login-remember{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 4px 0 18px;
+    font-size: 13.5px;
+    color: #3b4a4c;
+}
+.login-remember input{ accent-color: #37a25c; width: 15px; height: 15px; cursor: pointer; }
+.btn-login {
+    width: 100%;
+    padding: 15px;
+    border-radius: 12px;
+    background: #37a25c;
+    color: white;
+    border: 0;
+    font-weight: 700;
+    font-size: 15.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+.btn-login:hover {
+    background: #2c8049;
+    transform: translateY(-2px);
+}
+.login-divider{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 22px 0 18px;
+    color: #a3b0b2;
+    font-size: 13px;
+}
+.login-divider::before,
+.login-divider::after{
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #e6ebe9;
+}
+.login-back-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #37a25c;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 14.5px;
+    width: 100%;
+}
+.login-back-link:hover{ text-decoration: underline; }
+.login-footer-note{
+    text-align: center;
+    color: #8a9a9d;
+    font-size: 12.5px;
+    margin-top: 22px;
+}
+.login-footer-note i{ color: #37a25c; margin-right: 4px; }
+.login-secondary-link{
+    display: block;
+    text-align: center;
+    color: #8a9a9d;
+    font-size: 13px;
+    margin-top: 10px;
+    text-decoration: none;
+}
+.login-secondary-link:hover{ color: #37a25c; }
+.password-toggle-icon {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #8a9a9d;
+    font-size: 18px;
+    transition: color 0.2s ease;
+}
+.password-toggle-icon:hover { color: #37a25c; }
+
+@media(max-width: 900px){
+    .login-grid{ grid-template-columns: 1fr; text-align: center; }
+    .login-illustration-col{ text-align: center; }
+    .login-illustration-img{ margin: 0 auto 10px; }
+    .login-hero-desc{ margin: 0 auto; }
+    .login-topnav-label span{ display: none; }
+}
+
+/* APP */
+
+#appPage{
+display:none;
+}
+
+.sidebar{
+position:fixed;
+left:0;
+top:0;
+bottom:0;
+width:250px;
+background:#007d78;
+color:white;
+z-index:1000;
+padding:15px;
+overflow-y:auto;
+transition:transform .25s ease;
+}
+
+.brand{
+display:flex;
+align-items:center;
+gap:12px;
+padding:10px;
+margin-bottom:20px;
+}
+
+.brand-icon{
+width:50px;
+height:50px;
+background:white;
+color:#007d78;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:25px;
+}
+
+.brand h4{
+margin:0;
+font-size:22px;
+}
+
+.brand small{
+font-size:11px;
+}
+
+.menu{
+list-style:none;
+padding:0;
+margin:0;
+}
+
+.menu li{
+margin-bottom:5px;
+}
+
+.menu button{
+width:100%;
+border:0;
+background:transparent;
+color:white;
+text-align:left;
+padding:13px;
+border-radius:8px;
+font-size:14px;
+display:flex;
+align-items:center;
+gap:10px;
+transition:background .15s ease;
+}
+
+.menu button:hover,
+.menu button.active{
+background:white;
+color:var(--brand-green);
+}
+
+.menu i{
+width:25px;
+}
+
+.menu-divider{
+border-top:1px solid rgba(255,255,255,.25);
+margin:10px 5px;
+}
+
+.menu-label{
+font-size:11px;
+text-transform:uppercase;
+letter-spacing:.5px;
+opacity:.7;
+padding:8px 13px 4px;
+}
+
+.help-box{
+position:relative;
+margin-top:15px;
+border:1px solid rgba(255,255,255,.4);
+border-radius:10px;
+padding:15px;
+font-size:12px;
+}
+
+
+/* MAIN */
+
+.main{
+margin-left:250px;
+min-height:100vh;
+}
+
+.topbar{
+height:80px;
+background:white;
+border-bottom:1px solid #e4e9ec;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 30px;
+}
+
+.instansi{
+font-weight:bold;
+font-size:17px;
+}
+
+.user-area{
+display:flex;
+align-items:center;
+gap:15px;
+}
+
+.user-avatar{
+width:40px;
+height:40px;
+border-radius:50%;
+background:#e8f1f2;
+display:flex;
+align-items:center;
+justify-content:center;
+color:#006f6a;
+}
+
+.content{
+padding:30px;
+}
+
+
+/* DASHBOARD */
+
+.welcome{
+margin-bottom:25px;
+}
+
+.welcome h2{
+font-weight:bold;
+}
+
+.stat-card{
+background:white;
+border-radius:14px;
+padding:20px;
+height:100%;
+border:1px solid #e2e9eb;
+}
+
+.stat-icon{
+width:55px;
+height:55px;
+border-radius:12px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:25px;
+margin-bottom:15px;
+}
+
+.stat-number{
+font-size:30px;
+font-weight:bold;
+}
+
+.card-panel{
+background:white;
+border-radius:14px;
+padding:20px;
+border:1px solid #e2e9eb;
+height:100%;
+}
+
+.table{
+font-size:13px;
+}
+
+.badge-status{
+padding:7px 10px;
+border-radius:8px;
+font-size:11px;
+}
+
+.badge-role{
+padding:5px 9px;
+border-radius:8px;
+font-size:11px;
+}
+
+
+/* PAGE */
+
+.page-title{
+margin-bottom:25px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+}
+
+.page-title h2{
+font-weight:bold;
+margin:0;
+}
+
+
+/* FORM */
+
+.step{
+display:flex;
+justify-content:space-between;
+margin-bottom:25px;
+}
+
+.step-item{
+flex:1;
+text-align:center;
+font-size:12px;
+}
+
+.step-number{
+width:30px;
+height:30px;
+border-radius:50%;
+background:#ddd;
+display:inline-flex;
+align-items:center;
+justify-content:center;
+margin-bottom:5px;
+}
+
+.step-item.active .step-number{
+background:var(--brand-green);
+color:white;
+}
+
+
+/* ===== SIDEBAR OFF-CANVAS (MOBILE) ===== */
+.sidebar-overlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(13,36,32,.5);
+  z-index:999;
+}
+.sidebar-overlay.show{
+  display:block;
+}
+
+.sidebar-toggle-btn{
+  display:none;
+  background:transparent;
+  border:1px solid #e2e9eb;
+  color:#0d2420;
+  width:40px;
+  height:40px;
+  border-radius:10px;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
+  flex-shrink:0;
+  cursor:pointer;
+}
+
+@media(max-width:900px){
+
+.sidebar{
+  width:260px;
+  padding:15px;
+  transform:translateX(-100%);
+  box-shadow:0 0 30px rgba(0,0,0,.25);
+}
+.sidebar.open{
+  transform:translateX(0);
+}
+
+.main{
+  margin-left:0;
+}
+
+.topbar{
+  padding:0 16px;
+}
+
+.sidebar-toggle-btn{
+  display:flex;
+}
+
+.content{
+  padding:15px;
+}
+
+.instansi{
+  font-size:14px;
+  line-height:1.3;
+}
+
+}
+
+@media(max-width:400px){
+  .instansi{
+    font-size:12.5px;
+  }
+  .user-area strong{
+    display:none;
+  }
+}
+
+/* =========================================
+   MODERN DASHBOARD UI (RESPONSIF & PROPORSIONAL)
+========================================= */
+.dash-card {
+  background: white;
+  border-radius: 20px;
+  border: 1px solid #ebf0f2;
+  box-shadow: 0 4px 15px rgba(0, 40, 35, 0.03);
+  padding: 24px;
+}
+.kpi-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+.kpi-title {
+  font-size: 14px;
+  color: #6c757d;
+  font-weight: 600;
+}
+.kpi-value {
+  font-size: 34px;
+  font-weight: 800;
+  color: #0d2420;
+  line-height: 1;
+  margin: 0;
+}
+.custom-list-item {
+  transition: background 0.2s;
+}
+.custom-list-item:hover {
+  background: #f8fbf9;
+  border-radius: 12px;
+}
+.edukasi-slide-wrap{
+  position: relative;
+  min-height: 56px;
+}
+.edukasi-slide-item{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: edukasiFadeIn .4s ease;
+}
+@keyframes edukasiFadeIn{
+  from{ opacity:0; transform: translateY(4px); }
+  to{ opacity:1; transform: translateY(0); }
+}
+.edukasi-dot{
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #d8e2e0;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+.edukasi-dot.active{
+  background: #37a25c;
+  width: 16px;
+  border-radius: 4px;
+}
+
+/* =========================================
+   KEMBALIKAN SIDEBAR HIJAU & UKURAN TOPBAR
+========================================= */
+body {
+  background: #f4f7f9;
+  font-family: 'Plus Jakarta Sans', Arial, sans-serif;
+  color: #0d2420;
+}
+@media(min-width:901px){
+  .main { margin-left: 250px; }
+}
+.topbar {
+  background: white;
+  border-bottom: 1px solid #ebf0f2;
+  height: 80px;
+  padding: 0 30px;
+}
+.topbar .instansi {
+  font-weight: 700;
+  font-size: 15.5px;
+  color: #0d2420;
+}
+.user-area {
+  background: #ffffff;
+  padding: 6px 20px 6px 8px;
+  border-radius: 99px;
+  border: 1px solid #ebf0f2;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+  margin-left: auto;
+}
+
+/* PAKSA SIDEBAR JADI HIJAU */
+.sidebar {
+  background: var(--brand-green) !important;
+  border-right: none !important;
+}
+.sidebar .brand{
+  border-bottom:1px solid rgba(255,255,255,.15);
+  padding-bottom:18px;
+  margin-bottom:16px;
+}
+.sidebar .brand h4, 
+.sidebar .brand small, 
+.sidebar .help-box {
+  color: #ffffff !important; 
+}
+.sidebar .menu button {
+  background: transparent !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
+}
+.sidebar .menu button:hover {
+  background: rgba(255,255,255,0.1) !important;
+}
+/* PENANDA HALAMAN AKTIF (WARNA PUTIH) */
+.sidebar .menu button.active {
+  background: #ffffff !important;
+  color: var(--brand-green) !important;
+  font-weight: bold !important;
+}
+.sidebar .menu button.active * {
+  color: var(--brand-green) !important;
+}
+.sidebar-promo { display: none !important; }
+
+/* Responsif Mobile untuk Dashboard */
+@media (max-width: 768px) {
+  .dash-card { padding: 18px; }
+  .kpi-value { font-size: 28px; }
+  .welcome h3 { font-size: 22px !important; }
+}
+
+/* ===========================================
+   SAMAKAN SEMUA WARNA HIJAU BOOTSTRAP KE BRAND
+=========================================== */
+.bg-success{
+  background-color: var(--brand-green-soft) !important;
+  color: var(--brand-green) !important;
+}
+.text-success{
+  color: var(--brand-green) !important;
+}
+.btn-success{
+  background-color: var(--brand-green) !important;
+  border-color: var(--brand-green) !important;
+}
+.btn-success:hover,
+.btn-success:focus{
+  background-color: var(--brand-green-dark) !important;
+  border-color: var(--brand-green-dark) !important;
+}
+.btn-outline-success{
+  color: var(--brand-green) !important;
+  border-color: var(--brand-green) !important;
+}
+.btn-outline-success:hover{
+  background-color: var(--brand-green) !important;
+  color: white !important;
+}
+.badge.bg-success{
+  background-color: var(--brand-green) !important;
+  color: white !important;
+}
+.form-check-input:checked{
+  background-color: var(--brand-green) !important;
+  border-color: var(--brand-green) !important;
+}
+.spinner-border.text-success{
+  color: var(--brand-green) !important;
+}
+
+</style>
+
+</head>
+
+
+<body>
+<!-- TOAST NOTIFIKASI LAPORAN BARU -->
+<div class="toast-container position-fixed top-0 end-0 p-4" style="z-index: 9999;">
+  <div id="toastNotifBaru" class="toast align-items-center text-bg-success border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body fw-bold" style="font-size: 15px;">
+        <i class="bi bi-bell-fill me-2 fs-5"></i> Ada Laporan Gratifikasi Baru Masuk!
+      </div>
+      <button type="button" class="btn-close btn-close-white me-3 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
+</div>
+<div id="loginPage">
+
+  <nav class="login-topnav">
+    <div class="login-brand">
+      <div class="login-brand-icon">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/d/dc/Lambang_Kabupaten_Banyumas.png" alt="Logo SIGAR">
+      </div>
+      <div>
+        <h5>SIGAR</h5>
+        <small>Sistem Anti Gratifikasi Responsif</small>
+      </div>
+    </div>
+    <div class="login-topnav-label">
+      <i class="bi bi-person-circle"></i>
+      <span>Admin Login</span>
+    </div>
+  </nav>
+
+  <div class="login-grid">
+
+    <div class="login-illustration-col">
+      <div class="login-illustration-img">
+        <!-- GANTI src DI BAWAH INI DENGAN ASSET ILUSTRASI ANDA -->
+        <img src="https://drive.google.com/thumbnail?id=1a4llZAvHVfliXUNZr3Z4BJ5FlJBnnJZM&sz=w1000" alt="Ilustrasi SIGAR" onerror="this.style.display='none';">
+      </div>
+      <h1 class="login-hero-title">SIGAR</h1>
+      <h2 class="login-hero-subtitle">Sistem Informasi<br>Anti Gratifikasi Responsif</h2>
+      <span class="login-hero-underline"></span>
+      <p class="login-hero-desc">Membangun budaya integritas, transparansi, dan pelayanan publik yang bebas gratifikasi.</p>
+    </div>
+
+    <div class="login-card-col">
+      <div class="login-box">
+        <div class="login-logo">
+          <div class="login-icon-circle"><i class="bi bi-shield-check"></i></div>
+          <h2>Selamat Datang Kembali</h2>
+          <p>Masuk untuk mengakses Dashboard SIGAR</p>
+        </div>
+
+        <div id="loginAlert"></div>
+
+        <div class="mb-3">
+          <label class="form-label">Username</label>
+          <div class="login-input-wrap">
+            <i class="bi bi-person"></i>
+            <input type="text" id="loginUsername" class="form-control" placeholder="Masukkan username admin">
+          </div>
+        </div>
+
+        <div class="mb-2">
+          <label class="form-label">Password</label>
+          <div class="login-input-wrap">
+            <i class="bi bi-lock"></i>
+            <input type="password" id="loginPassword" class="form-control" placeholder="Masukkan password" style="padding-right: 45px;">
+            <i class="bi bi-eye-slash password-toggle-icon" id="togglePasswordIcon" onclick="togglePasswordVisibility()"></i>
+          </div>
+        </div>
+
+        <label class="login-remember">
+          <input type="checkbox" id="loginIngatSaya" checked>
+          Ingat Saya
+        </label>
+
+        <button class="btn-login" onclick="login()">
+          <i class="bi bi-box-arrow-in-right"></i>
+          Masuk ke Dashboard
+          <i class="bi bi-arrow-right"></i>
+        </button>
+
+        <div class="login-divider"><span>atau</span></div>
+
+        <a href="#" class="login-back-link" onclick="alertLupaPassword(event)">
+          <i class="bi bi-lock"></i> Lupa Password?
+        </a>
+
+        <a href="<?= ScriptApp.getService().getUrl() ?>" class="login-secondary-link">
+          <i class="bi bi-arrow-left"></i> Kembali ke Halaman Publik
+        </a>
+      </div>
+
+      <div class="login-footer-note">
+        <i class="bi bi-shield-check"></i> © 2026 SIGAR. Dinas Kesehatan Kabupaten Banyumas
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<div id="appPage">
+
+
+<div class="sidebar">
+  <div class="brand">
+    <div class="brand-icon">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/d/dc/Lambang_Kabupaten_Banyumas.png" alt="Logo Kabupaten Banyumas" style="width:100%;height:100%;object-fit:contain;padding:4px;">
+    </div>
+    <div>
+      <h4>SIGAR</h4>
+      <small>Sistem Informasi<br>Anti Gratifikasi Responsif</small>
+    </div>
+  </div>
+
+  <ul class="menu">
+    <li><button onclick="showPage('dashboard',this)" class="active"><i class="bi bi-house-door"></i><span>Dashboard</span></button></li>
+    <li class="admin-only"><button onclick="showPage('laporan',this)"><i class="bi bi-folder"></i><span>Laporan Masuk</span></button></li>
+    <li class="admin-only">
+      <button onclick="showPage('monitoring',this)">
+        <i class="bi bi-clipboard-check"></i><span>Monitoring & Tindak Lanjut</span>
+        <span id="monitoringBadge" class="badge bg-danger ms-auto" style="display:none; font-size: 11px;">0</span>
+      </button>
+    </li>
+    <li><button onclick="showPage('edukasi',this)"><i class="bi bi-book"></i><span>Edukasi & Informasi</span></button></li>
+    <li><button onclick="showPage('regulasi',this)"><i class="bi bi-journal-text"></i><span>Regulasi</span></button></li>
+    <li class="admin-only"><button onclick="showPage('statistik',this)"><i class="bi bi-bar-chart"></i><span>Statistik</span></button></li>
+    
+    <li class="admin-only menu-divider-item"><div class="menu-label">ADMINISTRASI</div></li>
+    <li class="admin-only"><button onclick="showPage('kelolauser',this)"><i class="bi bi-people"></i><span>Kelola Pengguna</span></button></li>
+    <li><button onclick="showPage('pengaturan',this)"><i class="bi bi-gear"></i><span>Pengaturan</span></button></li>
+    <li><button onclick="logout()"><i class="bi bi-box-arrow-right"></i><span>Logout</span></button></li>
+  </ul>
+
+  <div class="help-box">
+    <strong>Butuh Bantuan?</strong><br><br>
+    <i class="bi bi-telephone"></i> (0281) 123456<br><br>
+    <i class="bi bi-envelope"></i> sigar.dinkesbms@gmail.com
+  </div>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar(false)"></div>
+
+<div class="main">
+
+
+<div class="topbar">
+  <div class="d-flex align-items-center gap-2" style="min-width:0;">
+    <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()" aria-label="Buka menu">
+      <i class="bi bi-list"></i>
+    </button>
+    <div class="instansi text-truncate">Dinas Kesehatan dan Keluarga Berencana Kabupaten Banyumas</div>
+  </div>
+
+  <div class="user-area">
+    <!-- DROPDOWN NOTIFIKASI -->
+    <div class="dropdown me-2 border-end pe-3">
+      <button class="btn btn-link text-dark p-0 position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border:none; text-decoration:none;">
+        <i class="bi bi-bell fs-5 text-muted"></i>
+        <span id="bellBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display:none; font-size: 0.6rem;">0</span>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end shadow border-0" id="notifDropdown" style="width: 320px; max-height: 400px; overflow-y: auto; z-index: 1050;">
+        <li><h6 class="dropdown-header fw-bold border-bottom pb-2">Notifikasi Baru</h6></li>
+        <div id="notifListContainer">
+          <li><span class="dropdown-item text-muted text-center small py-3">Belum ada notifikasi baru</span></li>
+        </div>
+      </ul>
+    </div>
+
+    <!-- PROFIL ADMIN -->
+    <div class="user-avatar" style="width: 32px; height: 32px;">
+      <i class="bi bi-person fs-6"></i>
+    </div>
+    <div class="dropdown">
+      <button class="btn btn-link text-dark text-decoration-none p-0 d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown">
+        <strong id="userName" style="font-size: 13.5px;">Admin SIGAR</strong>
+        <i class="bi bi-chevron-down text-muted" style="font-size: 10px;"></i>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+        <li><span class="dropdown-item-text text-muted small" id="userRole">ADMIN</span></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item text-danger fw-bold" href="#" onclick="logout()"><i class="bi bi-box-arrow-right me-2"></i>Keluar</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<div class="content">
+
+
+<!-- DASHBOARD -->
+<section id="page-dashboard">
+
+  <!-- WELCOME BANNER -->
+ <!-- WELCOME BANNER -->
+<div class="dash-card mb-4 overflow-hidden position-relative" style="background: #ffffff; padding: 24px 30px;">
+  <div class="row align-items-center position-relative" style="z-index: 2;">
+    <div class="col-12 col-md-8">
+      <h3 class="fw-bold mb-2" style="color: #0d2420; font-size: 28px;">Selamat Datang, <br class="d-md-none"><span style="color: #37a25c;" id="welcomeNameDash">Admin SIGAR</span></h3>
+      <p class="text-muted mb-0" style="font-size: 15px; max-width: 500px;">Kelola laporan, pantau tindak lanjut, dan wujudkan lingkungan kerja yang bersih dari gratifikasi.</p>
+    </div>
+    <div class="col-md-4 d-none d-md-block p-0" style="align-self:stretch; margin:-24px -30px -24px 0;">
+  <img src="https://drive.google.com/thumbnail?id=1my4vXf0WOeX5df6oZIOowrPvFmtcq4za&sz=w1000" alt="Ilustrasi SIGAR" style="width:100%; height:100%; object-fit:cover; display:block; border-radius:0 20px 20px 0;">
+</div>
+    
+  </div>
+</div>
+
+  <!-- KPI CARDS (Dibuat Responsif Flex) -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-lg-auto flex-lg-fill">
+      <div class="dash-card h-100 py-4 px-3">
+        <div class="d-flex align-items-center gap-3 mb-2">
+          <div class="kpi-icon bg-success bg-opacity-10 text-success"><i class="bi bi-file-earmark-text"></i></div>
+          <div class="kpi-title">Total Laporan</div>
+        </div>
+        <div class="d-flex align-items-baseline gap-2 mt-3">
+          <h2 class="kpi-value" id="dashTotal">0</h2>
+          <span class="text-muted small fw-bold">Laporan</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-auto flex-lg-fill">
+      <div class="dash-card h-100 py-4 px-3">
+        <div class="d-flex align-items-center gap-3 mb-2">
+          <div class="kpi-icon bg-warning bg-opacity-10 text-warning"><i class="bi bi-hourglass-split"></i></div>
+          <div class="kpi-title">Diproses</div>
+        </div>
+        <div class="d-flex align-items-baseline gap-2 mt-3">
+          <h2 class="kpi-value" id="dashProses">0</h2>
+          <span class="text-muted small fw-bold">Laporan</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-auto flex-lg-fill">
+      <div class="dash-card h-100 py-4 px-3">
+        <div class="d-flex align-items-center gap-3 mb-2">
+          <div class="kpi-icon bg-success bg-opacity-10 text-success"><i class="bi bi-check-circle"></i></div>
+          <div class="kpi-title">Selesai</div>
+        </div>
+        <div class="d-flex align-items-baseline gap-2 mt-3">
+          <h2 class="kpi-value" id="dashSelesai">0</h2>
+          <span class="text-muted small fw-bold">Laporan</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-auto flex-lg-fill">
+      <div class="dash-card h-100 py-4 px-3">
+        <div class="d-flex align-items-center gap-3 mb-2">
+          <div class="kpi-icon bg-danger bg-opacity-10 text-danger"><i class="bi bi-x-circle"></i></div>
+          <div class="kpi-title">Ditolak</div>
+        </div>
+        <div class="d-flex align-items-baseline gap-2 mt-3">
+          <h2 class="kpi-value" id="dashDitolak">0</h2>
+          <span class="text-muted small fw-bold">Laporan</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- KOTAK HIJAU: MONITORING -->
+    <div class="col-12 col-lg-auto flex-lg-fill">
+      <div class="dash-card h-100 text-white d-flex flex-column justify-content-center p-4" style="background-color: #37a25c; border:none; box-shadow: 0 8px 20px rgba(55, 162, 92, 0.25);">
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <i class="bi bi-clipboard-check fs-4"></i>
+          <h6 class="fw-bold mb-0" style="font-size: 15px;">Monitoring Laporan</h6>
+        </div>
+        <p class="small opacity-75 mb-3" style="font-size: 13px; line-height: 1.4;">Verifikasi dan update tindak lanjut laporan gratifikasi.</p>
+        <button class="btn btn-light fw-bold w-100 text-success py-2" style="font-size: 13px; border-radius: 10px;" onclick="showPage('monitoring', document.querySelectorAll('.menu button')[2])">Buka Monitoring </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHARTS & LISTS -->
+  <div class="row g-4">
+    
+    <!-- TREN LAPORAN -->
+    <div class="col-lg-4 col-md-12">
+      <div class="dash-card h-100">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 class="fw-bold mb-0" style="color: #0d2420; font-size: 15px;">Tren Laporan</h6>
+          <select id="filterTrenLaporan" class="form-select form-select-sm w-auto border-0" style="background-color:#f2faf6; color:#0d6b60; font-weight:bold; cursor:pointer; font-size:12px;" onchange="renderDashLine()">
+            <option value="3">3 Bulan</option>
+            <option value="6" selected>6 Bulan</option>
+            <option value="12">12 Bulan</option>
+          </select>
+        </div>
+        <div style="height: 250px; width: 100%;">
+          <canvas id="dashLineChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- LAPORAN TERBARU -->
+    <div class="col-lg-4 col-md-6">
+      <div class="dash-card h-100 d-flex flex-column">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 class="fw-bold mb-0" style="color: #0d2420; font-size: 15px;">Laporan Terbaru</h6>
+          <a href="#" onclick="showPage('laporan', document.querySelectorAll('.menu button')[1])" class="text-success text-decoration-none fw-bold" style="font-size: 12.5px;">Lihat Semua</a>
+        </div>
+      <div id="laporanTerbaruList" class="flex-grow-1">
+          <div class="text-center text-muted small mt-4"><div class="spinner-border spinner-border-sm"></div> Memuat...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATUS & EDUKASI POPULER -->
+    <div class="col-lg-4 col-md-6 d-flex flex-column gap-3">
+      <!-- DONUT CHART -->
+      <div class="dash-card flex-grow-1 py-3">
+        <h6 class="fw-bold mb-3" style="color: #0d2420; font-size: 15px;">Status Tindak Lanjut</h6>
+        <div class="d-flex align-items-center justify-content-center h-100 pb-2">
+          <div style="width: 110px; height: 110px;">
+            <canvas id="dashDonutChart"></canvas>
+          </div>
+          <div id="dashDonutLegend" class="ms-3" style="color:#5c6b6d; font-size: 12px;">
+             <!-- JS Injected Legend -->
+          </div>
+        </div>
+      </div>
+
+      <!-- EDUKASI POPULER (SLIDE OTOMATIS) -->
+<div class="dash-card d-flex flex-column" style="padding: 20px;">
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <h6 class="fw-bold mb-0" style="color: #0d2420; font-size: 14px;">Edukasi Populer</h6>
+    <a href="#" onclick="showPage('edukasi', document.querySelectorAll('.menu button')[3])" class="text-success text-decoration-none fw-bold" style="font-size: 12px;">Lihat Semua</a>
+  </div>
+  <div id="edukasiDashboard" class="edukasi-slide-wrap">
+     <div class="text-center text-muted small mt-2"><div class="spinner-border spinner-border-sm"></div> Memuat...</div>
+  </div>
+  <div id="edukasiDots" class="d-flex justify-content-center gap-1 mt-2"></div>
+</div>
+    </div>
+
+  </div>
+</section>
+
+<section
+id="page-laporan"
+class="hidden">
+
+
+<div class="page-title">
+
+<h2>
+Laporan Masuk
+</h2>
+
+</div>
+
+
+<div class="card-panel">
+
+<div class="row mb-3 align-items-end g-2">
+
+  <div class="col-md-3">
+    <label class="form-label small text-muted mb-1">Periode Unduh</label>
+<select id="filterPeriodeUnduh" class="form-select" onchange="toggleCustomRange(); loadLaporan();">
+      <option value="semua">Semua Data</option>
+      <option value="harian">Harian (Hari Ini)</option>
+      <option value="mingguan">Mingguan (Minggu Ini)</option>
+      <option value="bulanan">Bulanan (Bulan Ini)</option>
+      <option value="tahunan">Tahunan (Tahun Ini)</option>
+      <option value="custom">Rentang Tanggal</option>
+    </select>
+  </div>
+
+  <div class="col-md-4 d-none" id="customRangeWrap">
+    <div class="row g-2">
+      <div class="col-6">
+        <label class="form-label small text-muted mb-1">Dari</label>
+    <input type="date" id="unduhTanggalAwal" class="form-control" onchange="loadLaporan()">     
+   </div>
+      <div class="col-6">
+        <label class="form-label small text-muted mb-1">Sampai</label>
+  <input type="date" id="unduhTanggalAkhir" class="form-control" onchange="loadLaporan()">     
+   </div>
+    </div>
+  </div>
+
+  <div class="col-md-2">
+    <button class="btn btn-success w-100" id="btnUnduhExcel" onclick="unduhExcel()">
+      <i class="bi bi-file-earmark-excel"></i> Unduh Excel
+    </button>
+  </div>
+
+</div>
+
+<div class="row mb-3">
+
+  <div class="col-md-4">
+    <select
+    id="filterStatus"
+    class="form-select"
+    onchange="loadLaporan()">
+
+    <option value="Semua Status">Semua Status</option>
+    <option value="Belum Terverifikasi">Belum Terverifikasi</option>
+    <option value="Terverifikasi">Terverifikasi</option>
+    <option value="Ditolak">Ditolak</option>
+
+    </select>
+  </div>
+
+  <div class="col-md-4">
+    <select
+    id="filterJenis"
+    class="form-select"
+    onchange="loadLaporan()">
+
+    <option>
+    Semua Jenis
+    </option>
+
+    <option>
+    Uang
+    </option>
+
+    <option>
+    Parcel/Barang
+    </option>
+
+    <option>
+    Makanan/Minuman
+    </option>
+
+    <option>
+    Fasilitas
+    </option>
+
+    <option>
+    Tiket/Perjalanan
+    </option>
+
+    <option>
+    Diskon/Rabat
+    </option>
+
+    <option>
+    Lainnya
+    </option>
+
+    </select>
+  </div>
+
+</div>
+
+
+<div class="table-responsive">
+
+<table class="table">
+
+<thead>
+
+<tr>
+
+<th>No</th>
+
+<th>No. Laporan</th>
+
+<th>Tanggal</th>
+
+<th>Jenis</th>
+
+<th>Pelapor</th>
+
+<th>Status</th>
+
+<th>Aksi</th>
+
+</tr>
+
+</thead>
+
+<tbody id="tabelLaporan">
+
+</tbody>
+
+</table>
+
+</div>
+
+<!-- Halaman -->
+<div class="d-flex justify-content-between align-items-center mt-2">
+  <small class="text-muted" id="infoLaporan"></small>
+  <nav>
+    <ul class="pagination pagination-sm mb-0" id="paginasiLaporan"></ul>
+  </nav>
+</div>
+
+</div>
+
+</section>
+
+
+<section
+id="page-monitoring"
+class="hidden">
+
+
+<div class="page-title">
+
+<h2>
+Monitoring & Tindak Lanjut
+</h2>
+
+</div>
+
+
+<div class="card-panel">
+<div class="row mb-3">
+  
+<!-- Filter & Search bar -->
+<div class="col-md-4">
+<select id="filterStatusMonitoring" class="form-select" onchange="applyMonitoringFilter()">
+<option value="Belum Terverifikasi">Belum Terverifikasi</option>
+<option value="Semua Status">Semua Status</option>
+<option value="Terverifikasi">Terverifikasi</option>
+<option value="Ditolak">Ditolak</option>
+</select>
+</div>
+
+<div class="col-md-8">
+<input type="text" id="searchMonitoring" class="form-control" placeholder="Cari nomor laporan, nama pelapor, atau jenis..." oninput="applyMonitoringFilter()">
+</div>
+
+</div>
+<div class="table-responsive">
+
+<table class="table">
+
+<thead>
+
+<tr>
+
+<th>No</th>
+
+<th>Laporan</th>
+
+<th>Jenis</th>
+
+<th>Status</th>
+
+<th>Aksi</th>
+
+</tr>
+
+</thead>
+
+<tbody id="tabelMonitoring">
+
+</tbody>
+
+</table>
+
+</div>
+
+<!-- Halaman  -->
+<div class="d-flex justify-content-between align-items-center mt-2">
+  <small class="text-muted" id="infoMonitoring"></small>
+  <nav>
+    <ul class="pagination pagination-sm mb-0" id="paginasiMonitoring"></ul>
+  </nav>
+</div>
+
+</div>
+
+</section>
+
+
+<section
+id="page-edukasi"
+class="hidden">
+
+
+<div class="page-title">
+
+<h2>
+Edukasi & Informasi
+</h2>
+
+<button
+class="btn btn-success admin-only"
+onclick="bukaModalEdukasi()">
+
+<i class="bi bi-plus-circle"></i>
+
+&nbsp;Tambah Edukasi
+
+</button>
+
+</div>
+
+
+<div id="edukasiAlert"></div>
+
+<div
+class="row g-3"
+id="edukasiList">
+
+</div>
+
+</section>
+
+
+<section id="page-regulasi" class="hidden">
+  <div class="page-title">
+    <h2> Regulasi </h2>
+    <button class="btn btn-success admin-only" onclick="bukaModalRegulasi()">
+      <i class="bi bi-plus-circle"></i> &nbsp;Tambah Regulasi
+    </button>
+  </div>
+  <div id="regulasiAlert"></div>
+  <div class="row g-3" id="regulasiListAdmin">
+  </div>
+</section>
+
+
+<section id="page-statistik" class="hidden">
+  <div class="page-title">
+    <h2> Statistik & Monitoring </h2>
+  </div>
+
+  <!-- KARTU KPI UTAMA (Menjadi 5 Kolom Sejajar) -->
+  <div class="row g-3 mb-4">
+    <!-- 1. Total Laporan -->
+    <div class="col-sm-6 col-lg">
+      <div class="card border-0 shadow-sm rounded-4 h-100 p-3">
+        <div class="d-flex align-items-center">
+          <div class="bg-success bg-opacity-10 text-success rounded-circle p-2 me-2"><i class="bi bi-file-earmark-text fs-5"></i></div>
+          <div>
+            <h4 class="mb-0 fw-bold" id="statKpiTotal">0</h4>
+            <span class="text-muted" style="font-size:11.5px;">Total Laporan</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 2. Belum Verifikasi -->
+    <div class="col-sm-6 col-lg">
+      <div class="card border-0 shadow-sm rounded-4 h-100 p-3">
+        <div class="d-flex align-items-center">
+          <div class="bg-warning bg-opacity-10 text-warning rounded-circle p-2 me-2"><i class="bi bi-hourglass-split fs-5"></i></div>
+          <div>
+            <h4 class="mb-0 fw-bold" id="statKpiProses">0</h4>
+            <span class="text-muted" style="font-size:11.5px;">Belum Verifikasi</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 3. Terverifikasi -->
+    <div class="col-sm-6 col-lg">
+      <div class="card border-0 shadow-sm rounded-4 h-100 p-3">
+        <div class="d-flex align-items-center">
+          <div class="bg-success bg-opacity-10 text-success rounded-circle p-2 me-2"><i class="bi bi-check-circle fs-5"></i></div>
+          <div>
+            <h4 class="mb-0 fw-bold" id="statKpiSelesai">0</h4>
+            <span class="text-muted" style="font-size:11.5px;">Terverifikasi</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 4. Ditolak -->
+    <div class="col-sm-6 col-lg">
+      <div class="card border-0 shadow-sm rounded-4 h-100 p-3">
+        <div class="d-flex align-items-center">
+          <div class="bg-danger bg-opacity-10 text-danger rounded-circle p-2 me-2"><i class="bi bi-x-circle fs-5"></i></div>
+          <div>
+            <h4 class="mb-0 fw-bold" id="statKpiDitolak">0</h4>
+            <span class="text-muted" style="font-size:11.5px;">Ditolak</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 5. Rata-rata Respon (SLA) -->
+    <div class="col-12 col-lg">
+      <div class="card border-0 shadow-sm rounded-4 h-100 p-3">
+        <div class="d-flex align-items-center">
+          <div class="bg-info bg-opacity-10 text-info rounded-circle p-2 me-2"><i class="bi bi-stopwatch fs-5"></i></div>
+          <div>
+            <h4 class="mb-0 fw-bold"><span id="statKpiSla">0</span> <span class="fs-6 fw-normal text-muted">Hari</span></h4>
+            <span class="text-muted" style="font-size:11.5px;">Rata-rata Respon</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-4 align-items-stretch">
+    <!-- Kiri: Diagram Batang Estimasi Nilai -->
+    <div class="col-md-5">
+      <div class="card border-0 shadow-sm rounded-4 h-100 p-3">
+        <h6 class="fw-bold mb-3 small text-muted"><i class="bi bi-graph-up text-success"></i> Tren Estimasi Nilai Gratifikasi</h6>
+        <div style="height: 220px; display: flex; justify-content: center; width: 100%;">
+          <canvas id="nilaiChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-7">
+      <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
+        <div class="p-3 d-flex justify-content-between align-items-center flex-wrap gap-2" style="background: linear-gradient(135deg, #0d2e2c 0%, #37a25c 100%); color: white;">
+           <div class="d-flex align-items-center gap-3">
+             <div class="bg-white bg-opacity-25 rounded-circle p-2"><i class="bi bi-cash-stack fs-4"></i></div>
+             <div>
+               <span class="small opacity-75">Estimasi Nilai Gratifikasi</span>
+               <h4 class="mb-0 fw-bold" id="statKpiNilaiDisplay">Rp 0</h4>
+             </div>
+           </div>
+           
+           <div class="d-flex gap-2">
+             <select id="filterNilaiStatus" class="form-select form-select-sm w-auto bg-white bg-opacity-25 text-white border-0 fw-bold shadow-none" style="cursor:pointer;" onchange="updateTampilanNilai()">
+               <option value="semua" class="text-dark">Semua Status</option>
+               <option value="terverifikasi" class="text-dark">Terverifikasi</option>
+               <option value="belum terverifikasi" class="text-dark">Belum Terverifikasi</option>
+               <option value="ditolak" class="text-dark">Ditolak</option>
+             </select>
+             <select id="filterNilaiWaktu" class="form-select form-select-sm w-auto bg-white bg-opacity-25 text-white border-0 fw-bold shadow-none" style="cursor:pointer;" onchange="updateTampilanNilai()">
+               <option value="semua" class="text-dark">Total Waktu</option>
+               <option value="bulan" class="text-dark">Bulan Ini</option>
+               <option value="minggu" class="text-dark">Minggu Ini</option>
+               <option value="hari" class="text-dark">Hari Ini</option>
+             </select>
+           </div>
+        </div>
+        <div class="p-3 bg-white flex-grow-1">
+           <h6 class="fw-bold mb-3 small text-muted"><i class="bi bi-bar-chart-steps"></i> Rincian Sumber Berdasarkan Jenis Gratifikasi</h6>
+           <div id="listNilaiJenis" class="row g-3">
+           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-md-7">
+      <div class="card border-0 shadow-sm rounded-4 p-3 h-100">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h6 class="fw-bold mb-0">Laporan per Rentang Waktu</h6>
+          <select id="filterChartWaktu" class="form-select form-select-sm w-auto border-0 bg-light" style="color: #37a25c; font-weight: bold;" onchange="renderBarChart()">
+            <option value="bulan">Per Bulan</option>
+            <option value="minggu">Per Minggu</option>
+            <option value="hari">7 Hari Terakhir</option>
+          </select>
+        </div>
+        <div style="min-height: 400px; display: flex;"><canvas id="barChart"></canvas></div>
+      </div>
+    </div>
+    
+    <!-- Donut Charts (Jenis & Lokasi) -->
+    <div class="col-md-5 d-flex flex-column gap-3">
+      <div class="card border-0 shadow-sm rounded-4 p-3 flex-grow-1">
+        <h6 class="fw-bold mb-3">Jenis Gratifikasi</h6>
+        <div style="height: 200px; display: flex; justify-content: center;"><canvas id="donutChart"></canvas></div>
+      </div>
+      <div class="card border-0 shadow-sm rounded-4 p-3 flex-grow-1">
+        <h6 class="fw-bold mb-3">Lokasi Kejadian</h6>
+        <div style="height: 200px; display: flex; justify-content: center;"><canvas id="lokasiChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-md-7">
+      <div class="card border-0 shadow-sm rounded-4 p-3 h-100">
+        <h6 class="fw-bold mb-3">Top Unit Kerja / Instansi Pelapor</h6>
+        <div style="height: 250px; display: flex; justify-content: center;"><canvas id="instansiChart"></canvas></div>
+      </div>
+    </div>
+    <div class="col-md-5">
+      <div class="card border-0 shadow-sm rounded-4 p-3 h-100">
+        <h6 class="fw-bold mb-3">Tingkat Kepercayaan Mode Pelaporan</h6>
+        <div style="height: 250px; display: flex; justify-content: center;"><canvas id="anonimitasChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<section
+id="page-pengaturan"
+class="hidden">
+
+
+<div class="page-title">
+
+<h2>
+Pengaturan
+</h2>
+
+</div>
+
+
+<div class="card-panel">
+
+<h5>
+Profil Pengguna
+</h5>
+
+<hr>
+
+<p>
+<strong>Nama:</strong>
+
+<span id="profilNama"></span>
+
+</p>
+
+<p>
+<strong>Username:</strong>
+
+<span id="profilUsername"></span>
+
+</p>
+
+<p>
+<strong>Role:</strong>
+
+<span id="profilRole"></span>
+
+</p>
+
+
+<hr>
+
+
+<button
+class="btn btn-danger"
+onclick="logout()">
+
+<i class="bi bi-box-arrow-right"></i>
+
+Logout
+
+</button>
+
+</div>
+
+</section>
+
+
+<section
+id="page-kelolauser"
+class="hidden">
+
+
+<div class="page-title">
+
+<h2>
+Kelola Pengguna
+</h2>
+
+<button
+class="btn btn-success"
+data-bs-toggle="modal"
+data-bs-target="#modalTambahUser">
+
+<i class="bi bi-person-plus"></i>
+
+&nbsp;Tambah Pengguna
+
+</button>
+
+</div>
+
+
+<div class="card-panel">
+
+<div id="userAlert"></div>
+
+<div class="table-responsive">
+
+<table class="table">
+
+<thead>
+
+<tr>
+
+<th>No</th>
+
+<th>Username</th>
+
+<th>Nama</th>
+
+<th>Instansi</th>
+
+<th>Jabatan</th>
+
+<th>Role</th>
+
+<th>Status</th>
+
+<th>Aksi</th>
+
+</tr>
+
+</thead>
+
+<tbody id="tabelUser">
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+
+
+</div>
+
+</div>
+
+</div>
+
+
+<div
+class="modal fade"
+id="detailModal">
+
+<div class="modal-dialog modal-lg">
+
+<div class="modal-content">
+
+<div class="modal-header">
+
+<h5>
+Detail Laporan
+</h5>
+
+<button
+class="btn-close"
+data-bs-dismiss="modal">
+</button>
+
+</div>
+
+<div
+class="modal-body"
+id="detailContent">
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="modal fade" id="modalTambahUser" data-bs-backdrop="static">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="formTambahUser">
+        <div class="modal-header" style="background-color: #37a25c; color: white; border-bottom: none;">
+          <h5 class="modal-title">Tambah Pengguna</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input type="text" id="userUsername" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="text" id="userPassword" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Nama Lengkap</label>
+            <input type="text" id="userNama" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Instansi</label>
+            <input type="text" id="userInstansi" class="form-control" value="Dinas Kesehatan dan Keluarga Berencana Kabupaten Banyumas">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Jabatan</label>
+            <input type="text" id="userJabatan" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Role</label>
+            <select id="userRoleInput" class="form-select" style="border-color: #37a25c;">
+              <option value="PEGAWAI">PEGAWAI</option>
+              <option value="ADMIN">ADMIN</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer bg-light border-top-0">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn" style="background-color: #37a25c; color: white;">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDIT PENGGUNA -->
+<div class="modal fade" id="modalEditUser" data-bs-backdrop="static">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="formEditUser">
+        <div class="modal-header" style="background-color: #37a25c; color: white; border-bottom: none;">
+          <h5 class="modal-title">Edit Pengguna</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="editUserId">
+          <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input type="text" id="editUserUsername" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password Baru</label>
+            <input type="text" id="editUserPassword" class="form-control">
+            <small class="text-muted" style="font-size:11px;">*Kosongkan jika tidak ingin mengubah password</small>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Nama Lengkap</label>
+            <input type="text" id="editUserNama" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Instansi</label>
+            <input type="text" id="editUserInstansi" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Jabatan</label>
+            <input type="text" id="editUserJabatan" class="form-control">
+          </div>
+          <div class="row">
+            <div class="col-6 mb-3">
+              <label class="form-label">Role</label>
+              <select id="editUserRoleInput" class="form-select" style="border-color: #37a25c;">
+                <option value="PEGAWAI">PEGAWAI</option>
+                <option value="ADMIN">ADMIN</option>
+              </select>
+            </div>
+            <div class="col-6 mb-3">
+              <label class="form-label">Status Akun</label>
+              <select id="editUserStatus" class="form-select" style="border-color: #37a25c;">
+                <option value="Aktif">Aktif</option>
+                <option value="Nonaktif">Nonaktif</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer bg-light border-top-0">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn" style="background-color: #37a25c; color: white;">Simpan Perubahan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalUpdateStatus" data-bs-backdrop="static">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      
+      <form id="formUpdateStatus" onsubmit="submitUpdateStatus(event)">
+        
+        <div class="modal-header" style="background-color: #37a25c; color: white; border-bottom: none;">
+          <h5 class="modal-title"><i class="bi bi-clipboard-check"></i> Tindak Lanjut Laporan</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        
+        <div class="modal-body">
+          <h6 class="text-muted mb-2">Detail Laporan:</h6>
+          <div class="mb-4 p-3 bg-light rounded border" id="detailLaporanUpdate">
+            <div class="text-center text-muted">
+              <div class="spinner-border spinner-border-sm" role="status"></div> Memuat data...
+            </div>
+          </div>
+
+          <hr>
+          
+          <h6 class="mb-3 font-weight-bold">Formulir Tindak Lanjut</h6>
+          <input type="hidden" id="updateNoLaporan">
+
+          <div class="mb-3">
+            <label class="form-label font-weight-bold">Ubah Status</label>
+            <select id="updateStatusInput" class="form-select" style="border-color: #37a25c;" required>
+              <option value="Belum Terverifikasi">Belum Terverifikasi</option>
+              <option value="Terverifikasi">Terverifikasi</option>
+              <option value="Ditolak">Ditolak</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label font-weight-bold">Catatan / Keterangan Tambahan</label>
+            <textarea id="updateCatatanInput" class="form-control" rows="3" placeholder="Masukkan catatan tindak lanjut (opsional)..."></textarea>
+          </div>
+        </div>
+        
+        <div class="modal-footer bg-light border-top-0">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn" id="btnSimpanUpdate" style="background-color: #37a25c; color: white;">Simpan Perubahan</button>
+        </div>
+        
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalEdukasi" data-bs-backdrop="static">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <form id="formEdukasi" onsubmit="simpanEdukasi(event)">
+
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalEdukasiTitle">Tambah Edukasi</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+
+          <input type="hidden" id="edukasiId">
+
+          <div class="mb-3">
+            <label class="form-label">Judul</label>
+            <input type="text" id="edukasiJudul" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Deskripsi Singkat</label>
+            <input type="text" id="edukasiDeskripsi" class="form-control">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Konten</label>
+            <textarea id="edukasiKonten" class="form-control" rows="4"></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Gambar</label>
+            <input type="file" id="edukasiGambar" class="form-control" accept="image/*" onchange="previewEdukasiGambar(event)">
+            <div class="form-text">Kosongkan jika tidak ingin mengganti gambar saat mengubah data.</div>
+            <img id="edukasiPreview" src="" style="display:none;max-width:100%;margin-top:8px;border-radius:8px;">
+            <div id="edukasiGambarLamaWrap" style="display:none;margin-top:8px;">
+              <div class="form-text mb-1">Gambar saat ini:</div>
+              <img id="edukasiGambarLama" src="" style="max-width:100%;border-radius:8px;">
+              <div class="form-check mt-2">
+                <input class="form-check-input" type="checkbox" id="edukasiHapusGambar">
+                <label class="form-check-label" for="edukasiHapusGambar">Hapus gambar ini</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Status</label>
+            <select id="edukasiStatus" class="form-select">
+              <option value="Aktif">Aktif</option>
+              <option value="Nonaktif">Nonaktif</option>
+            </select>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-success" id="btnSimpanEdukasi">Simpan</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL REGULASI -->
+<div class="modal fade" id="modalRegulasi" data-bs-backdrop="static">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="formRegulasi" onsubmit="simpanRegulasi(event)">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalRegulasiTitle">Tambah Regulasi</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="regulasiId">
+          <div class="mb-3">
+            <label class="form-label">Judul Regulasi</label>
+            <input type="text" id="regulasiJudul" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Deskripsi Singkat</label>
+            <textarea id="regulasiDeskripsi" class="form-control" rows="3" required></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Link Dokumen / Peraturan</label>
+            <input type="url" id="regulasiLink" class="form-control" placeholder="https://..." required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Status</label>
+            <select id="regulasiStatus" class="form-select">
+              <option value="Aktif">Aktif</option>
+              <option value="Nonaktif">Nonaktif</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-success" id="btnSimpanRegulasi">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+
+var BERANDA_URL = "<?= ScriptApp.getService().getUrl() ?>";
+
+
+
+/* ==================================================
+GLOBAL & SISTEM NOTIFIKASI LONCENG
+================================================== */
+let currentUser = null;
+let edukasiData = [];
+let laporanDataAll = [];
+let laporanHalaman = 1;
+const laporanPerHalaman = 10;
+let monitoringDataRaw = [];
+let monitoringDataAll = [];
+let monitoringHalaman = 1;
+const monitoringPerHalaman = 10;
+
+// Variabel Auto-Refresh & Notif
+let lastTotalLaporan = -1;
+let autoRefreshInterval = null;
+let notifArray = JSON.parse(localStorage.getItem('SIGAR_NOTIFS') || '[]');
+
+/* ==================================================
+SIDEBAR OFF-CANVAS (MOBILE)
+================================================== */
+function toggleSidebar(force){
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  if(!sidebar || !overlay) return;
+
+  const shouldOpen = typeof force === 'boolean' ? force : !sidebar.classList.contains('open');
+  sidebar.classList.toggle('open', shouldOpen);
+  overlay.classList.toggle('show', shouldOpen);
+}
+
+// Fungsi untuk menghapus notif yang usianya > 4 hari secara otomatis
+function bersihkanNotifLama() {
+  const batasWaktu = 4 * 24 * 60 * 60 * 1000; // 4 hari dalam milidetik
+  const sekarang = Date.now();
+  notifArray = notifArray.filter(function(notif) {
+    return (sekarang - (notif.timestamp || sekarang)) < batasWaktu;
+  });
+  simpanNotifLocal();
+}
+
+function simpanNotifLocal() {
+  localStorage.setItem('SIGAR_NOTIFS', JSON.stringify(notifArray));
+}
+
+function tambahNotif(pesan) {
+  const tgl = new Date();
+  const waktuFormat = tgl.toLocaleDateString('id-ID', {day:'numeric', month:'short'}) + ', ' + tgl.toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});
+  
+  // Masukkan data ke array (isRead false = belum dibaca)
+  notifArray.unshift({ 
+    pesan: pesan, 
+    waktu: waktuFormat, 
+    timestamp: Date.now(),
+    isRead: false 
+  }); 
+  
+  bersihkanNotifLama();
+  renderNotif();
+}
+
+// Menggantikan fungsi hapusNotif yang lama
+function tandaiSudahDibaca(index, event) {
+  if(event) event.stopPropagation(); // Mencegah dropdown tertutup otomatis saat diklik
+  if(!notifArray[index].isRead) {
+    notifArray[index].isRead = true; // Ubah status jadi sudah dibaca
+    simpanNotifLocal();
+    renderNotif();
+  }
+}
+
+function renderNotif() {
+  bersihkanNotifLama(); // Bersihkan yang kadaluarsa tiap kali lonceng dirender
+  
+  const badge = document.getElementById('bellBadge');
+  const container = document.getElementById('notifListContainer');
+
+  if (!badge || !container) return;
+
+  // Hitung jumlah notif yang BELUM dibaca
+  const unreadCount = notifArray.filter(n => !n.isRead).length;
+
+  if (unreadCount > 0) {
+    badge.style.display = 'inline-block';
+    badge.innerText = unreadCount;
+  } else {
+    badge.style.display = 'none'; // Sembunyikan angka merah jika semua sudah dibaca
+  }
+
+  if (notifArray.length > 0) {
+    let html = '';
+    notifArray.forEach(function(item, index) {
+      // Bedakan tampilan: yang belum dibaca backgroundnya agak hijau, yang sudah dibaca transparan
+      const bgStyle = item.isRead ? 'background-color: transparent;' : 'background-color: #f0fdfa;'; 
+      const textStyle = item.isRead ? 'color: #6c757d; font-weight: normal;' : 'color: #37a25c; font-weight: bold;';
+      const iconStatus = item.isRead ? '<i class="bi bi-check-all text-success fs-5"></i>' : '<i class="bi bi-circle-fill text-danger" style="font-size:8px;"></i>';
+
+      html += '<li class="dropdown-item d-flex justify-content-between align-items-center border-bottom text-wrap py-2" style="cursor:pointer; ' + bgStyle + '" onclick="tandaiSudahDibaca(' + index + ', event)">' +
+              '<div>' +
+                '<div style="font-size:13px; ' + textStyle + '">' + item.pesan + '</div>' +
+                '<small class="text-muted" style="font-size:11px;"><i class="bi bi-clock"></i> ' + item.waktu + '</small>' +
+              '</div>' +
+              '<div class="ms-2">' + iconStatus + '</div>' +
+              '</li>';
+    });
+    container.innerHTML = html;
+  } else {
+    container.innerHTML = '<li><span class="dropdown-item text-muted text-center small py-3">Belum ada riwayat notifikasi</span></li>';
+  }
+}
+
+/* ==================================================
+INITIALIZE
+================================================== */
+
+function initializeApp(){
+  document.getElementById('userName').innerText = currentUser.nama;
+  document.getElementById('userRole').innerText = currentUser.role;
+  
+  // Perbaikan: Mencari ID yang benar untuk ucapan selamat datang di Dashboard Modern
+  const welcomeEl = document.getElementById('welcomeNameDash');
+  if(welcomeEl) welcomeEl.innerText = currentUser.nama;
+  
+  document.getElementById('profilNama').innerText = currentUser.nama;
+  document.getElementById('profilUsername').innerText = currentUser.username;
+  document.getElementById('profilRole').innerText = currentUser.role;
+
+  if(document.getElementById('namaPelapor')) document.getElementById('namaPelapor').value = currentUser.nama;
+  if(document.getElementById('instansi')) document.getElementById('instansi').value = currentUser.instansi;
+  if(document.getElementById('jabatan')) document.getElementById('jabatan').value = currentUser.jabatan;
+
+  applyRoleMenu();
+  
+  // Perbaikan: Pancing render halaman penuh sejak awal login
+  const btnDashboard = document.querySelector('.sidebar .menu button');
+  showPage('dashboard', btnDashboard); 
+  
+  renderNotif(); // Munculkan notif yang tersimpan saat login
+
+  // JALANKAN AUTO REFRESH BACKGROUND TIAP 30 DETIK
+  if(autoRefreshInterval) clearInterval(autoRefreshInterval);
+  autoRefreshInterval = setInterval(loadDashboard, 30000); 
+}
+
+/* ==================================================
+DASHBOARD (MODERN UI & CHARTS)
+================================================== */
+let miniDonutChart = null;
+let miniLineChart = null;
+let dashRawDates = []; 
+
+function loadDashboard(){
+  google.script.run
+  .withSuccessHandler(function(data){
+    
+    // --- NOTIFIKASI LONCENG & TOAST POP-UP ---
+    if (lastTotalLaporan !== -1 && data.total > lastTotalLaporan) {
+      let selisih = data.total - lastTotalLaporan;
+      let pesan = selisih > 1 ? `Ada ${selisih} laporan gratifikasi baru!` : `Ada 1 laporan gratifikasi baru!`;
+      
+      // Tambah badge merah di Lonceng
+      tambahNotif(pesan); 
+      
+      // Munculkan Pop-up Melayang (Toast)
+      const toastEl = document.getElementById('toastNotifBaru');
+      if(toastEl) {
+        const toast = new bootstrap.Toast(toastEl);
+        toast.show();
+      }
+
+      // Otomatis refresh tabel jika admin sedang buka tab laporan/monitoring
+      const activePage = document.querySelector('.menu button.active');
+      if (activePage) {
+        const pageName = activePage.querySelector('span').innerText.toLowerCase();
+        if (pageName.includes('monitoring')) loadMonitoring();
+        if (pageName.includes('laporan')) loadLaporan();
+      }
+    }
+    lastTotalLaporan = data.total; 
+    
+    // --- UPDATE KPI CARD ---
+    document.getElementById('dashTotal').innerText = data.total;
+    document.getElementById('dashProses').innerText = data.proses;
+    document.getElementById('dashSelesai').innerText = data.selesai;
+    document.getElementById('dashDitolak').innerText = data.ditolak;
+
+    const badgeMonitoring = document.getElementById('monitoringBadge');
+    if(badgeMonitoring){
+      if(data.proses > 0){
+        badgeMonitoring.style.display = 'inline-block';
+        badgeMonitoring.innerText = data.proses;
+      } else {
+        badgeMonitoring.style.display = 'none';
+      }
+    }
+
+    // --- UPDATE LIST LAPORAN TERBARU ---
+    let html = '';
+(data.laporanTerbaru || []).slice(0, 4).forEach(function(item){
+      let statusLengkap = item.status;
+      let warnaStatus = 'warning';
+      if(statusLengkap.toLowerCase().includes('terverifikasi') || statusLengkap.toLowerCase().includes('selesai')) warnaStatus = 'success';
+      if(statusLengkap.toLowerCase().includes('ditolak')) warnaStatus = 'danger';
+
+      let statusSingkat = statusLengkap === 'Belum Terverifikasi' ? 'Baru' : (statusLengkap === 'Terverifikasi' ? 'Selesai' : statusLengkap);
+      
+      html += `
+      <div class="custom-list-item d-flex align-items-center justify-content-between border-bottom py-2 px-1 mb-1">
+        <div class="d-flex align-items-center gap-3">
+          <div class="bg-success bg-opacity-10 text-success rounded-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+            <i class="bi bi-file-text fs-5"></i>
+          </div>
+          <div>
+            <h6 class="mb-0 fw-bold" style="font-size:13.5px; color:#0d2420;">${item.no}</h6>
+            <small class="text-muted" style="font-size:11.5px;">${item.jenis}</small>
+          </div>
+        </div>
+        <div class="text-end">
+          <span class="text-${warnaStatus} fw-bold" style="font-size:12px;"><i class="bi bi-circle-fill" style="font-size:6px; vertical-align:middle; margin-right:5px;"></i>${statusSingkat}</span><br>
+          <small class="text-muted" style="font-size:11px;">${item.tanggal}</small>
+        </div>
+      </div>`;
+    });
+    document.getElementById('laporanTerbaruList').innerHTML = html || '<div class="text-center text-muted small mt-4">Belum ada laporan</div>';
+
+    // --- RENDER DONUT CHART MINI ---
+    renderDashDonut(data.selesai, data.proses, data.ditolak, data.total);
+  })
+  .getDashboardData();
+
+  // --- RENDER LINE CHART TREN ---
+  google.script.run
+  .withSuccessHandler(function(statData){
+     dashRawDates = statData.dates;
+     renderDashLine(); 
+  })
+  .getStatistikData();
+  
+  loadEdukasi(); // Tarik materi edukasi (pakai cache memori)
+}
+
+function renderDashDonut(selesai, proses, ditolak, total) {
+  const ctx = document.getElementById('dashDonutChart').getContext('2d');
+  if (miniDonutChart) miniDonutChart.destroy();
+  
+  miniDonutChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Selesai', 'Diproses', 'Ditolak'],
+      datasets: [{
+        data: [selesai, proses, ditolak],
+        backgroundColor: ['#37a25c', '#ffc107', '#dc3545'],
+        borderWidth: 0,
+        cutout: '75%'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { enabled: true } }
+    }
+  });
+
+  document.getElementById('dashDonutLegend').innerHTML = `
+    <div class="mb-2"><i class="bi bi-circle-fill text-success me-2" style="font-size:8px; vertical-align:middle;"></i> <span class="fw-bold" style="color:#0d2420;">Selesai</span> <span class="ms-2">${total ? Math.round((selesai/total)*100) : 0}% (${selesai})</span></div>
+    <div class="mb-2"><i class="bi bi-circle-fill text-warning me-2" style="font-size:8px; vertical-align:middle;"></i> <span class="fw-bold" style="color:#0d2420;">Diproses</span> <span class="ms-2">${total ? Math.round((proses/total)*100) : 0}% (${proses})</span></div>
+    <div><i class="bi bi-circle-fill text-danger me-2" style="font-size:8px; vertical-align:middle;"></i> <span class="fw-bold" style="color:#0d2420;">Ditolak</span> <span class="ms-2">${total ? Math.round((ditolak/total)*100) : 0}% (${ditolak})</span></div>
+  `;
+}
+
+function renderDashLine() {
+  const filterElement = document.getElementById('filterTrenLaporan');
+  const filterBulan = filterElement ? parseInt(filterElement.value) : 6;
+  
+  const labels = [];
+  const keys = [];
+  const dataCounts = [];
+  const sekarang = new Date();
+  
+  for (let i = filterBulan - 1; i >= 0; i--) {
+    let d = new Date(sekarang.getFullYear(), sekarang.getMonth() - i, 1);
+    let monthLabel = d.toLocaleString('id-ID', { month: 'short' });
+    let key = d.toLocaleString('id-ID', { month: 'numeric', year: 'numeric' }); 
+    
+    labels.push(monthLabel);
+    keys.push(key);
+    dataCounts.push(0); 
+  }
+
+  dashRawDates.forEach(item => {
+    let tglStr = typeof item === 'object' ? item.tanggal : item;
+    let d = new Date(tglStr);
+    let key = d.toLocaleString('id-ID', { month: 'numeric', year: 'numeric' });
+    let idx = keys.indexOf(key);
+    if (idx !== -1) {
+      dataCounts[idx]++;
+    }
+  });
+
+  const ctx = document.getElementById('dashLineChart').getContext('2d');
+  if (miniLineChart) miniLineChart.destroy();
+
+  const drawAngkaPlugin = {
+    id: 'drawAngkaPlugin',
+    afterDatasetsDraw(chart, args, pluginOptions) {
+      const { ctx, data } = chart;
+      ctx.save();
+      chart.getDatasetMeta(0).data.forEach((datapoint, index) => {
+        const value = data.datasets[0].data[index];
+        if(value > 0) { 
+          ctx.font = 'bold 12.5px "Plus Jakarta Sans", Arial';
+          ctx.fillStyle = '#0a544c'; 
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
+          ctx.fillText(value, datapoint.x, datapoint.y - 10); 
+        }
+      });
+      ctx.restore();
+    }
+  };
+  
+  let maxVal = Math.max(...dataCounts);
+  if (maxVal === 0) maxVal = 5;
+
+  miniLineChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Jumlah Laporan',
+        data: dataCounts,
+        borderColor: '#37a25c',
+        backgroundColor: 'rgba(55, 162, 92, 0.15)',
+        borderWidth: 3,
+        tension: 0.4,
+        fill: true,
+        pointBackgroundColor: '#ffffff',
+        pointBorderColor: '#37a25c',
+        pointBorderWidth: 2,
+        pointRadius: 4,
+        pointHoverRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      layout: { padding: { top: 25 } }, 
+      scales: {
+        x: { grid: { display: false } },
+        y: { display: false, min: 0, suggestedMax: maxVal + (maxVal * 0.35) } 
+      }
+    },
+    plugins: [drawAngkaPlugin]
+  });
+}
+
+
+/* ==================================================
+LOGIN
+================================================== */
+
+function login(){
+
+const username =
+document.getElementById(
+'loginUsername'
+).value;
+
+const password =
+document.getElementById(
+'loginPassword'
+).value;
+
+
+google.script.run
+
+.withSuccessHandler(function(res){
+
+if(res.success){
+
+currentUser =
+res.user;
+
+const ingatSaya = document.getElementById('loginIngatSaya');
+if(!ingatSaya || ingatSaya.checked){
+localStorage.setItem('SIGAR_USER', JSON.stringify(currentUser));
+}
+
+
+document.getElementById(
+'loginPage'
+).style.display =
+'none';
+
+
+document.getElementById(
+'appPage'
+).style.display =
+'block';
+
+
+initializeApp();
+
+}
+
+else{
+
+showLoginAlert(
+res.message
+);
+
+}
+
+})
+
+.withFailureHandler(function(err){
+
+showLoginAlert(
+err.message
+);
+
+})
+
+.login(
+username,
+password
+);
+
+}
+
+
+/* ==================================================
+LOGIN ALERT
+================================================== */
+
+function showLoginAlert(message){
+
+document.getElementById(
+'loginAlert'
+).innerHTML =
+
+'<div class="alert alert-danger">' +
+
+message +
+
+'</div>';
+
+}
+
+
+/* ==================================================
+   TOGGLE SHOW/HIDE PASSWORD
+================================================== */
+function togglePasswordVisibility() {
+  const passwordInput = document.getElementById('loginPassword');
+  const toggleIcon = document.getElementById('togglePasswordIcon');
+  
+  if (passwordInput.type === 'password') {
+    passwordInput.type = 'text';
+    toggleIcon.classList.remove('bi-eye-slash');
+    toggleIcon.classList.add('bi-eye');
+    toggleIcon.style.color = '#37a25c'; 
+  } 
+  else {
+    passwordInput.type = 'password';
+    toggleIcon.classList.remove('bi-eye');
+    toggleIcon.classList.add('bi-eye-slash');
+    toggleIcon.style.color = '#8a9a9d'; 
+  }
+}
+function alertLupaPassword(e){
+  e.preventDefault();
+  alert('Silakan hubungi administrator sistem untuk reset password Anda.');
+}
+
+
+/* ==================================================
+   LOGOUT
+================================================== */
+function logout(){
+  if(currentUser){
+    google.script.run.logout( currentUser.username );
+  }
+  
+  localStorage.removeItem( 'SIGAR_USER' );
+  currentUser = null;
+  window.top.location.href = BERANDA_URL;
+}
+
+
+/* ==================================================
+ROLE-BASED MENU
+================================================== */
+
+function applyRoleMenu() {
+  const isAdmin = currentUser && currentUser.role === 'ADMIN';
+
+  document.querySelectorAll('.admin-only').forEach(function(el) {
+    if (isAdmin) {
+      el.classList.remove('hidden');
+    } else {
+      el.classList.add('hidden');
+    }
+  });
+
+  if (!isAdmin) {
+    const activePage = document.querySelector('[id^="page-"]:not(.hidden)');
+    const adminPages = ['page-laporan', 'page-monitoring', 'page-statistik', 'page-kelolauser'];
+    if (activePage && adminPages.indexOf(activePage.id) !== -1) {
+      showPage('dashboard', document.querySelector('.menu button'));
+    }
+  }
+}
+
+
+
+/* ==================================================
+PAGE NAVIGATION
+================================================== */
+
+function showPage(page, button){
+
+  if(window.innerWidth <= 900){
+    toggleSidebar(false);
+  }
+
+  // 1. Sembunyikan semua halaman, munculkan yang dituju
+  document.querySelectorAll('[id^="page-"]').forEach(function(el){
+    el.classList.add('hidden');
+  });
+  const targetPage = document.getElementById('page-' + page);
+  if(targetPage) targetPage.classList.remove('hidden');
+
+  // 2. Hapus penanda putih (active) dari SEMUA tombol di menu
+  document.querySelectorAll('.sidebar .menu button').forEach(function(btn){
+    btn.classList.remove('active');
+  });
+
+  // 3. Pasang penanda putih (active) HANYA ke tombol yang sedang diklik
+  if(button){
+    button.classList.add('active');
+  } else {
+    // Trik pintar: Jika pindah halaman lewat link "Lihat Semua" di Dashboard
+    const autoBtn = document.querySelector(`.sidebar .menu button[onclick*="'${page}'"]`);
+    if(autoBtn) autoBtn.classList.add('active');
+  }
+
+  // 4. Muat data sesuai halaman
+  if(page === 'dashboard'){ loadDashboard(); }
+  if(page === 'laporan'){ loadLaporan(); }
+  if(page === 'monitoring'){ loadMonitoring(); }
+  if(page === 'edukasi'){ loadEdukasiAdmin(); }
+  if(page === 'regulasi'){ loadRegulasiAdmin(); }
+  if(page === 'statistik'){ loadStatistik(); }
+  if(page === 'kelolauser'){ loadUsers(); }
+}
+
+
+
+
+
+/* ==================================================
+SUBMIT LAPORAN
+================================================== */
+if(document.getElementById('formLaporan')){
+document
+.getElementById(
+'formLaporan'
+)
+.addEventListener(
+'submit',
+function(e){
+
+e.preventDefault();
+
+
+const file =
+document.getElementById(
+'bukti'
+).files[0];
+
+
+const data = {
+
+username:
+currentUser.username,
+
+namaPelapor:
+document.getElementById(
+'namaPelapor'
+).value,
+
+instansi:
+document.getElementById(
+'instansi'
+).value,
+
+jabatan:
+document.getElementById(
+'jabatan'
+).value,
+
+noTelepon:
+document.getElementById(
+'noTelepon'
+).value,
+
+email:
+document.getElementById(
+'email'
+).value,
+
+anonim:
+document.getElementById(
+'anonim'
+).checked,
+
+jenisGratifikasi:
+document.getElementById(
+'jenisGratifikasi'
+).value,
+
+tanggalKejadian:
+document.getElementById(
+'tanggalKejadian'
+).value,
+
+lokasiKejadian:
+document.getElementById(
+'lokasiKejadian'
+).value,
+
+pihakPemberi:
+document.getElementById(
+'pihakPemberi'
+).value,
+
+nilaiEstimasi:
+document.getElementById(
+'nilaiEstimasi'
+).value,
+
+uraian:
+document.getElementById(
+'uraian'
+).value,
+
+kronologi:
+document.getElementById(
+'kronologi'
+).value
+
+};
+
+
+if(file){
+
+const reader =
+new FileReader();
+
+
+reader.onload =
+function(){
+
+data.buktiBase64 =
+reader.result.split(',')[1];
+
+data.buktiNama =
+file.name;
+
+data.buktiType =
+file.type;
+
+
+kirimLaporan(
+data
+);
+
+};
+
+
+reader.readAsDataURL(
+file
+);
+
+}
+
+else{
+
+kirimLaporan(
+data
+);
+
+}
+
+});
+}
+
+
+function kirimLaporan(data){
+
+google.script.run
+
+.withSuccessHandler(function(res){
+
+if(res.success){
+
+document.getElementById(
+'laporAlert'
+).innerHTML =
+
+'<div class="alert alert-success">' +
+
+'<strong>Berhasil!</strong><br>' +
+
+res.message +
+
+'<br>Nomor Laporan: <strong>' +
+
+res.noLaporan +
+
+'</strong>' +
+
+'</div>';
+
+
+document.getElementById(
+'formLaporan'
+).reset();
+
+}
+
+})
+
+.withFailureHandler(function(err){
+
+document.getElementById(
+'laporAlert'
+).innerHTML =
+
+'<div class="alert alert-danger">' +
+
+err.message +
+
+'</div>';
+
+})
+
+.simpanLaporan(
+data
+);
+
+}
+
+
+/* ==================================================
+LAPORAN
+================================================== */
+
+function loadLaporan(){
+
+const filters = {
+  status: document.getElementById('filterStatus').value,
+  jenis: document.getElementById('filterJenis').value,
+  periode: document.getElementById('filterPeriodeUnduh').value,
+  tanggalAwal: document.getElementById('unduhTanggalAwal').value,
+  tanggalAkhir: document.getElementById('unduhTanggalAkhir').value
+};
+
+google.script.run
+.withSuccessHandler(function(data){
+laporanDataAll = data;
+laporanHalaman = 1;
+renderTabelLaporan();
+})
+.getLaporanData(filters);
+
+}
+
+function toggleCustomRange(){
+  const periode = document.getElementById('filterPeriodeUnduh').value;
+  document.getElementById('customRangeWrap').classList.toggle('d-none', periode !== 'custom');
+}
+
+function unduhExcel(){
+
+  const periode = document.getElementById('filterPeriodeUnduh').value;
+
+  if(periode === 'custom'){
+    const awal = document.getElementById('unduhTanggalAwal').value;
+    const akhir = document.getElementById('unduhTanggalAkhir').value;
+    if(!awal || !akhir){
+      alert('Silakan isi rentang tanggal Dari dan Sampai.');
+      return;
+    }
+  }
+
+  const btn = document.getElementById('btnUnduhExcel');
+  const originalHtml = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menyiapkan file...';
+
+  const filters = {
+    periode: periode,
+    status: document.getElementById('filterStatus').value,
+    jenis: document.getElementById('filterJenis').value,
+    tanggalAwal: document.getElementById('unduhTanggalAwal').value,
+    tanggalAkhir: document.getElementById('unduhTanggalAkhir').value
+  };
+
+  google.script.run
+    .withSuccessHandler(function(res){
+      btn.disabled = false;
+      btn.innerHTML = originalHtml;
+
+      if(!res.success){
+        alert('Gagal membuat file.');
+        return;
+      }
+
+      if(res.jumlah === 0){
+        alert('Tidak ada data laporan pada periode/filter yang dipilih.');
+        return;
+      }
+
+      const byteChars = atob(res.base64);
+      const byteNumbers = new Array(byteChars.length);
+      for (let i = 0; i < byteChars.length; i++){
+        byteNumbers[i] = byteChars.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = res.filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
+    })
+    .withFailureHandler(function(err){
+      btn.disabled = false;
+      btn.innerHTML = originalHtml;
+      alert('Gagal mengunduh: ' + err.message);
+    })
+    .unduhLaporanExcel(filters);
+}
+
+function renderTabelLaporan(){
+
+const totalData = laporanDataAll.length;
+const totalHalaman = Math.max(1, Math.ceil(totalData / laporanPerHalaman));
+
+if(laporanHalaman > totalHalaman) laporanHalaman = totalHalaman;
+
+const start = (laporanHalaman - 1) * laporanPerHalaman;
+const dataHalamanIni = laporanDataAll.slice(start, start + laporanPerHalaman);
+
+let html = '';
+
+dataHalamanIni.forEach(function(item,index){
+
+html +=
+'<tr>' +
+'<td>' + (start + index + 1) + '</td>' +
+'<td>' + item.noLaporan + '</td>' +
+'<td>' + item.tanggal + '</td>' +
+'<td>' + item.jenis + '</td>' +
+'<td>' + item.nama + '</td>' +
+'<td>' + getStatusBadge(item.status) + '</td>' +
+'<td>' +
+'<button class="btn btn-sm btn-outline-primary" onclick="openDetailLaporan(\'' + item.noLaporan + '\')">' +
+'<i class="bi bi-eye"></i>' +
+'</button>' +
+'</td>' +
+'</tr>';
+
+});
+
+if(totalData === 0){
+html = '<tr><td colspan="7" class="text-center text-muted py-3">Tidak ada data</td></tr>';
+}
+
+document.getElementById('tabelLaporan').innerHTML = html;
+
+document.getElementById('infoLaporan').innerText =
+totalData === 0
+? ''
+: 'Menampilkan ' + (start + 1) + '-' + Math.min(start + laporanPerHalaman, totalData) + ' dari ' + totalData + ' laporan';
+
+renderPaginasiLaporan(totalHalaman);
+
+}
+
+
+function renderPaginasiLaporan(totalHalaman){
+
+let html = '';
+
+html += '<li class="page-item ' + (laporanHalaman === 1 ? 'disabled' : '') + '">' +
+'<button class="page-link" onclick="gantiHalamanLaporan(' + (laporanHalaman - 1) + ')">Prev</button></li>';
+
+for(let i = 1; i <= totalHalaman; i++){
+html += '<li class="page-item ' + (i === laporanHalaman ? 'active' : '') + '">' +
+'<button class="page-link" onclick="gantiHalamanLaporan(' + i + ')" ' +
+(i === laporanHalaman ? 'style="background-color:#37a25c;border-color:#37a25c;"' : '') +
+'>' + i + '</button></li>';
+}
+
+html += '<li class="page-item ' + (laporanHalaman === totalHalaman ? 'disabled' : '') + '">' +
+'<button class="page-link" onclick="gantiHalamanLaporan(' + (laporanHalaman + 1) + ')">Next</button></li>';
+
+document.getElementById('paginasiLaporan').innerHTML = html;
+
+}
+
+
+function gantiHalamanLaporan(halaman){
+
+if(halaman < 1 || halaman > Math.ceil(laporanDataAll.length / laporanPerHalaman)) return;
+
+laporanHalaman = halaman;
+renderTabelLaporan();
+
+}
+
+/* ==================================================
+OPEN DETAIL LAPORAN
+================================================== */
+
+function openDetailLaporan(noLaporan){
+
+const url =
+
+BERANDA_URL +
+
+'?page=detail&no=' +
+
+encodeURIComponent(noLaporan);
+
+window.open(url,'_blank');
+
+}
+/* ==================================================
+MONITORING
+================================================== */
+function loadMonitoring(){
+
+google.script.run
+.withSuccessHandler(function(data){
+monitoringDataRaw = data;
+applyMonitoringFilter();
+})
+.getLaporanData();
+
+}
+
+
+function applyMonitoringFilter(){
+
+const status = document.getElementById('filterStatusMonitoring').value;
+const keyword = document.getElementById('searchMonitoring').value.toLowerCase().trim();
+
+let hasil = monitoringDataRaw;
+
+if(status !== 'Semua Status'){
+hasil = hasil.filter(function(item){
+return item.status === status;
+});
+}
+
+if(keyword){
+hasil = hasil.filter(function(item){
+return (
+(item.noLaporan || '').toLowerCase().indexOf(keyword) !== -1 ||
+(item.nama || '').toLowerCase().indexOf(keyword) !== -1 ||
+(item.jenis || '').toLowerCase().indexOf(keyword) !== -1
+);
+});
+}
+
+// Urutkan: Belum Terverifikasi selalu paling atas
+const prioritas = { 'Belum Terverifikasi': 0, 'Terverifikasi': 1, 'Ditolak': 2 };
+hasil = hasil.slice().sort(function(a, b){
+return (prioritas[a.status] ?? 3) - (prioritas[b.status] ?? 3);
+});
+
+monitoringDataAll = hasil;
+monitoringHalaman = 1;
+renderTabelMonitoring();
+
+}
+
+function renderTabelMonitoring(){
+
+const totalData = monitoringDataAll.length;
+const totalHalaman = Math.max(1, Math.ceil(totalData / monitoringPerHalaman));
+
+if(monitoringHalaman > totalHalaman) monitoringHalaman = totalHalaman;
+
+const start = (monitoringHalaman - 1) * monitoringPerHalaman;
+const dataHalamanIni = monitoringDataAll.slice(start, start + monitoringPerHalaman);
+
+let html = '';
+
+dataHalamanIni.forEach(function(item,index){
+
+html +=
+'<tr>' +
+'<td>' + (start + index + 1) + '</td>' +
+'<td>' + item.noLaporan + '</td>' +
+'<td>' + item.jenis + '</td>' +
+'<td>' + getStatusBadge(item.status) + '</td>' +
+'<td>' +
+'<button class="btn btn-sm btn-primary" onclick="updateStatus(\'' + item.noLaporan + '\')">Update</button>' +
+'</td>' +
+'</tr>';
+
+});
+
+if(totalData === 0){
+html = '<tr><td colspan="5" class="text-center text-muted py-3">Tidak ada laporan</td></tr>';
+}
+
+document.getElementById('tabelMonitoring').innerHTML = html;
+
+document.getElementById('infoMonitoring').innerText =
+totalData === 0
+? ''
+: 'Menampilkan ' + (start + 1) + '-' + Math.min(start + monitoringPerHalaman, totalData) + ' dari ' + totalData + ' laporan';
+
+renderPaginasiMonitoring(totalHalaman);
+
+}
+
+
+function renderPaginasiMonitoring(totalHalaman){
+
+let html = '';
+
+html += '<li class="page-item ' + (monitoringHalaman === 1 ? 'disabled' : '') + '">' +
+'<button class="page-link" onclick="gantiHalamanMonitoring(' + (monitoringHalaman - 1) + ')">Prev</button></li>';
+
+for(let i = 1; i <= totalHalaman; i++){
+html += '<li class="page-item ' + (i === monitoringHalaman ? 'active' : '') + '">' +
+'<button class="page-link" onclick="gantiHalamanMonitoring(' + i + ')" ' +
+(i === monitoringHalaman ? 'style="background-color:#37a25c;border-color:#37a25c;"' : '') +
+'>' + i + '</button></li>';
+}
+
+html += '<li class="page-item ' + (monitoringHalaman === totalHalaman ? 'disabled' : '') + '">' +
+'<button class="page-link" onclick="gantiHalamanMonitoring(' + (monitoringHalaman + 1) + ')">Next</button></li>';
+
+document.getElementById('paginasiMonitoring').innerHTML = html;
+
+}
+
+
+function gantiHalamanMonitoring(halaman){
+
+if(halaman < 1 || halaman > Math.ceil(monitoringDataAll.length / monitoringPerHalaman)) return;
+
+monitoringHalaman = halaman;
+renderTabelMonitoring();
+
+}
+
+/* ==================================================
+DETAIL
+================================================== */
+
+function detailLaporan(
+noLaporan
+){
+
+google.script.run
+
+.withSuccessHandler(function(data){
+
+if(!data) return;
+
+
+let html =
+
+'<table class="table">' +
+
+'<tr><th>No Laporan</th><td>' +
+data.noLaporan +
+'</td></tr>' +
+
+'<tr><th>Tanggal</th><td>' +
+data.tanggal +
+'</td></tr>' +
+
+'<tr><th>Pelapor</th><td>' +
+data.nama +
+'</td></tr>' +
+
+'<tr><th>Jenis</th><td>' +
+data.jenis +
+'</td></tr>' +
+
+'<tr><th>Tanggal Kejadian</th><td>' +
+data.tanggalKejadian +
+'</td></tr>' +
+
+'<tr><th>Lokasi</th><td>' +
+data.lokasiKejadian +
+'</td></tr>' +
+
+'<tr><th>Pihak Pemberi</th><td>' +
+data.pihakPemberi +
+'</td></tr>' +
+
+'<tr><th>Nilai</th><td>' +
+data.nilaiEstimasi +
+'</td></tr>' +
+
+'<tr><th>Uraian</th><td>' +
+data.uraian +
+'</td></tr>' +
+
+'<tr><th>Kronologi</th><td>' +
+data.kronologi +
+'</td></tr>' +
+
+'<tr><th>Status</th><td>' +
+getStatusBadge(
+data.status
+) +
+'</td></tr>' +
+
+'</table>';
+
+
+document.getElementById(
+'detailContent'
+).innerHTML =
+html;
+
+
+new bootstrap.Modal(
+document.getElementById(
+'detailModal'
+)
+).show();
+
+})
+
+.getDetailLaporan(
+noLaporan
+);
+
+}
+
+
+/* ==================================================
+UPDATE STATUS 
+================================================== */
+function updateStatus(noLaporan) {
+  var modalEl = document.getElementById('modalUpdateStatus');
+  var updateModal = bootstrap.Modal.getInstance(modalEl);
+  if (!updateModal) {
+    updateModal = new bootstrap.Modal(modalEl);
+  }
+  
+  document.getElementById('formUpdateStatus').reset();
+  document.getElementById('updateNoLaporan').value = noLaporan;
+  document.getElementById('detailLaporanUpdate').innerHTML = 
+    '<div class="text-center p-3 text-muted"><div class="spinner-border spinner-border-sm" style="color: #37a25c;" role="status"></div> Mengambil data laporan...</div>';
+  
+  updateModal.show();
+
+  google.script.run
+    .withSuccessHandler(function(data) {
+      if(!data) {
+        document.getElementById('detailLaporanUpdate').innerHTML = '<div class="alert alert-danger">Gagal menemukan data laporan.</div>';
+        return;
+      }
+      
+      document.getElementById('updateStatusInput').value = data.status;
+
+      var linkBukti = '<span class="text-muted fst-italic">Tidak ada lampiran</span>';
+      if (data.bukti && data.bukti.trim() !== '' && data.bukti !== '-') {
+        linkBukti = '<a href="' + data.bukti + '" target="_blank" class="btn btn-sm" style="background-color: #37a25c; color: white;"><i class="bi bi-box-arrow-up-right"></i> Lihat Bukti File</a>';
+      }
+
+      var html = 
+        '<table class="table table-sm table-borderless mb-0 small">' +
+          '<tr><th width="30%" class="text-muted">No. Laporan</th><td class="fw-bold">' + data.noLaporan + '</td></tr>' +
+          '<tr><th class="text-muted">Kategori</th><td>' + data.jenis + '</td></tr>' +
+          '<tr><th class="text-muted">Pelapor</th><td>' + data.nama + '</td></tr>' +
+          '<tr><th class="text-muted">Kronologi</th><td>' + data.kronologi + '</td></tr>' +
+          '<tr><th class="text-muted">Bukti Lampiran</th><td>' + linkBukti + '</td></tr>' +
+          '<tr><th class="text-muted">Status Saat Ini</th><td>' + getStatusBadge(data.status) + '</td></tr>' +
+        '</table>';
+      
+      document.getElementById('detailLaporanUpdate').innerHTML = html;
+    })
+    .withFailureHandler(function(err){
+      document.getElementById('detailLaporanUpdate').innerHTML = 
+        '<div class="alert alert-danger">Koneksi gagal: ' + err.message + '</div>';
+    })
+    .getDetailLaporan(noLaporan);
+}
+
+
+function submitUpdateStatus(event) {
+  if(event) {
+    event.preventDefault(); 
+  }
+
+  var noLaporan = document.getElementById('updateNoLaporan').value;
+  var status = document.getElementById('updateStatusInput').value;
+  var catatan = document.getElementById('updateCatatanInput').value;
+  var btnSubmit = document.getElementById('btnSimpanUpdate');
+  var originalText = btnSubmit.innerHTML;
+  btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menyimpan...';
+  btnSubmit.disabled = true;
+
+  google.script.run
+    .withSuccessHandler(function(res){
+      alert(res.message);
+      
+      var modalEl = document.getElementById('modalUpdateStatus');
+      var updateModal = bootstrap.Modal.getInstance(modalEl);
+      if (updateModal) {
+        updateModal.hide();
+      }
+      
+      btnSubmit.innerHTML = originalText;
+      btnSubmit.disabled = false;
+      
+      loadMonitoring();
+      loadDashboard();
+    })
+    .withFailureHandler(function(err){
+      alert('Gagal menyimpan: ' + err.message);
+      btnSubmit.innerHTML = originalText;
+      btnSubmit.disabled = false;
+    })
+    .updateStatusLaporan(
+      noLaporan, 
+      status, 
+      catatan || '', 
+      currentUser.nama
+    );
+}
+
+
+/* ==================================================
+STATUS BADGE
+================================================== */
+function getStatusBadge(status) {
+  if(status === 'Terverifikasi' || status === 'Selesai'){
+    return '<span class="badge bg-success badge-status">Terverifikasi</span>';
+  }
+  if(status === 'Ditolak'){
+    return '<span class="badge bg-danger badge-status">Ditolak</span>';
+  }
+  return '<span class="badge bg-warning text-dark badge-status">Belum Terverifikasi</span>';
+}
+
+
+/* ==================================================
+ROLE BADGE
+================================================== */
+
+function getRoleBadge(
+role
+){
+
+if(role === 'ADMIN'){
+
+return '<span class="badge bg-dark badge-role">ADMIN</span>';
+
+}
+
+return '<span class="badge bg-secondary badge-role">PEGAWAI</span>';
+
+}
+
+
+/* ==================================================
+EDUKASI (DASHBOARD & HALAMAN UTAMA)
+================================================== */
+
+let edukasiSlideList = [];
+let edukasiSlideIndex = 0;
+let edukasiSlideInterval = null;
+
+function loadEdukasi(){
+  const dashboardContainer = document.getElementById('edukasiDashboard');
+  if(!dashboardContainer) return;
+
+  if(edukasiSlideList.length > 0){
+    renderEdukasiSlide(); // tampilkan slide terakhir dulu sambil nunggu data baru
+  }
+
+  google.script.run
+  .withSuccessHandler(function(data){
+    if(!data || data.length === 0){
+      edukasiSlideList = [];
+      dashboardContainer.innerHTML = '<div class="text-center text-muted py-3 small">Belum ada materi edukasi.</div>';
+      document.getElementById('edukasiDots').innerHTML = '';
+      return;
+    }
+
+    edukasiSlideList = data.slice(0, 5); // Maksimal 5 slide
+    edukasiSlideIndex = 0;
+    renderEdukasiSlide();
+    renderEdukasiDots();
+    mulaiEdukasiAutoSlide();
+  })
+  .withFailureHandler(function(){
+    if(edukasiSlideList.length === 0){
+      dashboardContainer.innerHTML = '<div class="text-danger py-3 small">Gagal memuat edukasi.</div>';
+    }
+  })
+  .getEdukasi();
+}
+
+function renderEdukasiSlide(){
+  const container = document.getElementById('edukasiDashboard');
+  if(!container || edukasiSlideList.length === 0) return;
+
+  const item = edukasiSlideList[edukasiSlideIndex];
+
+  container.innerHTML = `
+    <div class="edukasi-slide-item">
+      <div class="bg-success bg-opacity-10 rounded-3 d-flex align-items-center justify-content-center text-success flex-shrink-0" style="width: 45px; height: 45px;">
+        ${item.gambar ? `<img src="${item.gambar}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">` : `<i class="bi bi-book-half fs-5"></i>`}
+      </div>
+      <div class="overflow-hidden">
+        <h6 class="fw-bold mb-1 text-truncate" style="color:#0d2420; font-size:13px;" title="${item.judul}">${item.judul}</h6>
+        <p class="text-muted mb-0 text-truncate" style="font-size: 11.5px;" title="${item.deskripsi || item.konten}">${item.deskripsi || item.konten || '-'}</p>
+      </div>
+    </div>
+  `;
+}
+
+function renderEdukasiDots(){
+  const dotsContainer = document.getElementById('edukasiDots');
+  if(!dotsContainer) return;
+
+  if(edukasiSlideList.length <= 1){
+    dotsContainer.innerHTML = '';
+    return;
+  }
+
+  let html = '';
+  edukasiSlideList.forEach(function(item, index){
+    html += `<span class="edukasi-dot ${index === edukasiSlideIndex ? 'active' : ''}" onclick="lompatEdukasiSlide(${index})"></span>`;
+  });
+  dotsContainer.innerHTML = html;
+}
+
+function lompatEdukasiSlide(index){
+  edukasiSlideIndex = index;
+  renderEdukasiSlide();
+  renderEdukasiDots();
+  mulaiEdukasiAutoSlide(); // reset timer biar nggak langsung lompat lagi
+}
+
+function mulaiEdukasiAutoSlide(){
+  if(edukasiSlideInterval) clearInterval(edukasiSlideInterval);
+  if(edukasiSlideList.length <= 1) return;
+
+  edukasiSlideInterval = setInterval(function(){
+    edukasiSlideIndex = (edukasiSlideIndex + 1) % edukasiSlideList.length;
+    renderEdukasiSlide();
+    renderEdukasiDots();
+  }, 4000);
+}
+
+
+function loadEdukasiAdmin(){
+  google.script.run
+  .withSuccessHandler(function(data){
+    edukasiData = data;
+    let html = '';
+
+    if(!data || data.length === 0){
+      html = '<div class="col-12 text-muted text-center py-4">Belum ada data edukasi yang terdaftar.</div>';
+      document.getElementById('edukasiList').innerHTML = html;
+      return;
+    }
+
+    data.forEach(function(item){
+      html +=
+      '<div class="col-md-6">' +
+        '<div class="card-panel h-100 d-flex flex-column justify-content-between">' +
+          '<div>' +
+            (item.gambar ? '<img src="' + item.gambar + '" style="width:100%;border-radius:8px;margin-bottom:8px;max-height:160px;object-fit:cover;">' : '') +
+            '<h5><i class="bi bi-book text-primary"></i> ' + item.judul + '</h5>' +
+            '<p class="mb-1 text-secondary"><strong>' + (item.deskripsi || '') + '</strong></p>' +
+            '<p class="text-muted" style="font-size:0.9em; white-space: pre-line;">' + (item.konten || '') + '</p>' +
+          '</div>' +
+          '<div class="mt-3 d-flex justify-content-between align-items-center">' +
+            '<span class="badge ' + (item.status === 'Aktif' ? 'bg-success' : 'bg-secondary') + '">' + item.status + '</span>' +
+            '<div>' +
+              '<button class="btn btn-sm btn-outline-primary me-1" onclick="editEdukasi(\'' + item.id + '\')"><i class="bi bi-pencil"></i> Edit</button>' +
+              '<button class="btn btn-sm btn-outline-danger" onclick="hapusEdukasiUI(\'' + item.id + '\')"><i class="bi bi-trash"></i> Hapus</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    });
+    document.getElementById('edukasiList').innerHTML = html;
+  })
+  .withFailureHandler(function(err){
+    document.getElementById('edukasiAlert').innerHTML =
+    '<div class="alert alert-danger">Gagal memuat data edukasi: ' + err.message + '</div>';
+  })
+  .getEdukasiAdmin();
+}
+
+
+function previewEdukasiGambar(e){
+
+const file = e.target.files[0];
+const preview = document.getElementById('edukasiPreview');
+
+if(!file){
+preview.style.display = 'none';
+return;
+}
+
+const reader = new FileReader();
+
+reader.onload = function(evt){
+preview.src = evt.target.result;
+preview.style.display = 'block';
+};
+
+reader.readAsDataURL(file);
+
+}
+
+
+function bukaModalEdukasi(){
+
+document.getElementById('formEdukasi').reset();
+document.getElementById('edukasiId').value = '';
+document.getElementById('edukasiPreview').style.display = 'none';
+document.getElementById('edukasiPreview').src = '';
+document.getElementById('edukasiGambarLamaWrap').style.display = 'none';
+document.getElementById('edukasiHapusGambar').checked = false;
+document.getElementById('modalEdukasiTitle').innerText = 'Tambah Edukasi';
+
+var modalEl = document.getElementById('modalEdukasi');
+var instance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+instance.show();
+
+}
+
+
+function editEdukasi(id){
+
+const item = edukasiData.find(function(p){ return p.id === id; });
+
+if(!item) return;
+
+document.getElementById('edukasiId').value = item.id;
+document.getElementById('edukasiJudul').value = item.judul;
+document.getElementById('edukasiDeskripsi').value = item.deskripsi || '';
+document.getElementById('edukasiKonten').value = item.konten || '';
+document.getElementById('edukasiStatus').value = item.status;
+document.getElementById('edukasiGambar').value = '';
+
+document.getElementById('edukasiPreview').style.display = 'none';
+document.getElementById('edukasiPreview').src = '';
+document.getElementById('edukasiHapusGambar').checked = false;
+
+const gambarLamaWrap = document.getElementById('edukasiGambarLamaWrap');
+const gambarLama = document.getElementById('edukasiGambarLama');
+
+if(item.gambar){
+gambarLama.src = item.gambar;
+gambarLamaWrap.style.display = 'block';
+} else {
+gambarLamaWrap.style.display = 'none';
+}
+
+document.getElementById('modalEdukasiTitle').innerText = 'Edit Edukasi';
+
+var modalEl = document.getElementById('modalEdukasi');
+var instance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+instance.show();
+
+}
+
+
+function hapusEdukasiUI(id){
+
+if(!confirm('Yakin ingin menghapus data edukasi ini?')) return;
+
+document.getElementById('edukasiAlert').innerHTML = '<div class="text-muted"><div class="spinner-border spinner-border-sm" role="status"></div> Menghapus...</div>';
+
+google.script.run
+.withSuccessHandler(function(res){
+  document.getElementById('edukasiAlert').innerHTML =
+  '<div class="alert alert-' + (res.success ? 'success' : 'danger') + '">' + res.message + '</div>';
+  loadEdukasiAdmin();
+  loadEdukasi(); 
+})
+.withFailureHandler(function(err){
+  document.getElementById('edukasiAlert').innerHTML =
+  '<div class="alert alert-danger">' + err.message + '</div>';
+})
+.hapusEdukasi(id);
+
+}
+
+
+function simpanEdukasi(e){
+
+e.preventDefault();
+
+const id = document.getElementById('edukasiId').value;
+const judul = document.getElementById('edukasiJudul').value;
+const deskripsi = document.getElementById('edukasiDeskripsi').value;
+const konten = document.getElementById('edukasiKonten').value;
+const status = document.getElementById('edukasiStatus').value;
+const hapusGambar = document.getElementById('edukasiHapusGambar').checked;
+const fileInput = document.getElementById('edukasiGambar');
+const btn = document.getElementById('btnSimpanEdukasi');
+
+btn.disabled = true;
+btn.innerText = 'Menyimpan...';
+
+function kirim(gambarBase64, gambarNama, gambarType){
+
+const data = {
+id: id,
+judul: judul,
+deskripsi: deskripsi,
+konten: konten,
+status: status,
+hapusGambar: hapusGambar,
+gambarBase64: gambarBase64 || '',
+gambarNama: gambarNama || '',
+gambarType: gambarType || ''
+};
+
+google.script.run
+.withSuccessHandler(function(res){
+  btn.disabled = false;
+  btn.innerText = 'Simpan';
+
+  document.getElementById('edukasiAlert').innerHTML =
+  '<div class="alert alert-' + (res.success ? 'success' : 'danger') + '">' + res.message + '</div>';
+
+  if(res.success){
+    var modalEl = document.getElementById('modalEdukasi');
+    var instance = bootstrap.Modal.getInstance(modalEl);
+    if(instance) instance.hide();
+
+    // Sinkronisasi pemanggilan data terbaru agar langsung muncul di UI
+    loadEdukasiAdmin();
+    loadEdukasi();
+  }
+})
+.withFailureHandler(function(err){
+  btn.disabled = false;
+  btn.innerText = 'Simpan';
+  document.getElementById('edukasiAlert').innerHTML = '<div class="alert alert-danger">' + err.message + '</div>';
+})
+[id ? 'updateEdukasi' : 'tambahEdukasi'](data);
+
+}
+
+if(fileInput.files && fileInput.files[0]){
+  const file = fileInput.files[0];
+  const reader = new FileReader();
+  reader.onload = function(evt){
+    const base64 = evt.target.result.split(',')[1];
+    kirim(base64, file.name, file.type);
+  };
+  reader.readAsDataURL(file);
+} else {
+  kirim();
+}
+
+}
+
+
+/* ==================================================
+REGULASI
+================================================== */
+
+function loadRegulasi(){
+
+google.script.run
+
+.withSuccessHandler(function(data){
+
+let html = '';
+
+
+data.forEach(function(item){
+
+html +=
+
+'<div class="col-md-6">' +
+
+'<div class="card-panel">' +
+
+'<h5>' +
+
+'<i class="bi bi-journal-text"></i> ' +
+
+item.judul +
+
+'</h5>' +
+
+'<p>' +
+
+item.deskripsi +
+
+'</p>' +
+
+'<a href="' +
+
+item.link +
+
+'" target="_blank" class="btn btn-outline-primary btn-sm">' +
+
+'Lihat Regulasi' +
+
+'</a>' +
+
+'</div>' +
+
+'</div>';
+
+});
+
+
+document.getElementById(
+'regulasiList'
+).innerHTML =
+html;
+
+})
+
+.getRegulasi();
+
+}
+
+
+/* ==================================================
+   VARIABEL GLOBAL STATISTIK 
+================================================== */
+let chartBarInstance = null;
+let chartDonutInstance = null;
+let chartLokasiInstance = null;
+let chartInstansiInstance = null;
+let chartAnonimInstance = null;
+let chartNilaiInstance = null;
+
+let rawStatistikDates = []; 
+let rawJenisData = {};
+let rawLokasiData = {};
+let rawInstansiData = {};
+let rawAnonimData = {};
+
+let rawStatistikNilai = { semua: 0, bulan: 0, minggu: 0, hari: 0 };
+let rawNilaiJenis = { semua: {}, bulan: {}, minggu: {}, hari: {} };
+
+/* ==================================================
+   STATISTIK UTAMA
+================================================== */
+function loadStatistik() {
+  google.script.run
+    .withSuccessHandler(function(data) {
+      document.getElementById('statKpiTotal').innerText = data.kpi.total;
+      document.getElementById('statKpiProses').innerText = data.kpi.proses;
+      document.getElementById('statKpiSelesai').innerText = data.kpi.selesai;
+      document.getElementById('statKpiDitolak').innerText = data.kpi.ditolak;
+      document.getElementById('statKpiSla').innerText = data.kpi.avgSla;
+
+      rawStatistikDates = data.dates;
+      rawJenisData = data.jenis;
+      rawLokasiData = data.lokasi;
+      rawInstansiData = data.instansi;
+      rawAnonimData = data.anonimitas;
+
+      renderBarChart(); 
+      renderDonutChart();
+      renderLokasiChart();
+      renderInstansiChart();
+      renderAnonimitasChart();
+      
+      updateTampilanNilai(); 
+    })
+    .getStatistikData();
+}
+
+/* ==================================================
+   UPDATE PANEL ESTIMASI NILAI UANG & CHART GRAFIK
+================================================== */
+function updateTampilanNilai() {
+  const filterWaktu = document.getElementById('filterNilaiWaktu').value;
+  const filterStatus = document.getElementById('filterNilaiStatus').value;
+  
+  let totalNilai = 0;
+  let rincianJenis = {};
+  let trenNilai = {}; 
+  
+  const now = new Date();
+  now.setHours(0,0,0,0);
+  const startOfWeek = new Date(now);
+  startOfWeek.setDate(now.getDate() - ((now.getDay() + 6) % 7)); 
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+  let sortedDates = [...rawStatistikDates].reverse();
+
+  sortedDates.forEach(item => {
+    let statusItem = String(item.status || '').toLowerCase();
+    if (statusItem === 'dalam proses') statusItem = 'belum terverifikasi';
+    if (statusItem === 'selesai') statusItem = 'terverifikasi';
+
+    if (filterStatus !== 'semua' && statusItem !== filterStatus) return;
+
+    const itemDate = new Date(item.tanggal);
+    itemDate.setHours(0,0,0,0);
+
+    if (filterWaktu === 'hari' && itemDate.getTime() !== now.getTime()) return;
+    if (filterWaktu === 'minggu' && itemDate.getTime() < startOfWeek.getTime()) return;
+    if (filterWaktu === 'bulan' && itemDate.getTime() < startOfMonth.getTime()) return;
+
+    const nilai = item.nilai || 0;
+    const jenis = item.jenis || 'Lainnya';
+
+    totalNilai += nilai;
+    rincianJenis[jenis] = (rincianJenis[jenis] || 0) + nilai;
+
+    let keyChart = '';
+    if (filterWaktu === 'semua') {
+      keyChart = itemDate.toLocaleString('id-ID', { month: 'short', year: 'numeric' });
+    } else {
+      keyChart = itemDate.toLocaleString('id-ID', { day: '2-digit', month: 'short' });
+    }
+    trenNilai[keyChart] = (trenNilai[keyChart] || 0) + nilai;
+  });
+
+  const formatRp = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(totalNilai);
+  document.getElementById('statKpiNilaiDisplay').innerText = formatRp;
+  
+  let entries = Object.entries(rincianJenis).sort((a,b) => b[1] - a[1]);
+  let html = '';
+  
+  if(entries.length === 0 || totalNilai === 0) {
+    html = '<div class="col-12 text-center text-muted small py-4">Tidak ada data nominal uang untuk filter ini.</div>';
+  } else {
+    entries.forEach(e => {
+      if(e[1] > 0) { 
+        const valRp = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(e[1]);
+        const percent = Math.round((e[1] / totalNilai) * 100);
+        html += `
+        <div class="col-md-6">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="small fw-semibold text-dark text-truncate pe-2">${e[0]}</span>
+            <span class="small fw-bold text-success">${valRp}</span>
+          </div>
+          <div class="progress" style="height: 6px;">
+            <div class="progress-bar bg-success" role="progressbar" style="width: ${percent}%;" aria-valuenow="${percent}" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+        </div>`;
+      }
+    });
+  }
+  document.getElementById('listNilaiJenis').innerHTML = html;
+
+  let labelsChart = Object.keys(trenNilai);
+  let dataGrafik = Object.values(trenNilai);
+
+  if (filterWaktu === 'semua' && labelsChart.length > 7) {
+    labelsChart = labelsChart.slice(-7);
+    dataGrafik = dataGrafik.slice(-7);
+  }
+
+  const ctxNilai = document.getElementById('nilaiChart').getContext('2d');
+  if (chartNilaiInstance) chartNilaiInstance.destroy();
+
+  chartNilaiInstance = new Chart(ctxNilai, {
+    type: 'bar',
+    data: {
+      labels: labelsChart,
+      datasets: [{
+        label: 'Estimasi Nilai (Rp)',
+        data: dataGrafik,
+        backgroundColor: '#37a25c',
+        borderRadius: 4,
+        barThickness: 20
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(context.raw);
+            }
+          }
+        }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: {size: 10} } },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function(value) {
+              if(value >= 1000000000) return (value/1000000000) + ' M';
+              if(value >= 1000000) return (value/1000000) + ' Jt';
+              if(value >= 1000) return (value/1000) + ' Rb';
+              return value;
+            },
+            font: {size: 10}
+          }
+        }
+      }
+    }
+  });
+}
+
+
+/* ==================================================
+   RENDER BAR CHART (DINAMIS WAKTU & STATUS)
+================================================== */
+function renderBarChart() {
+  const filterType = document.getElementById('filterChartWaktu').value;
+  let grouped = {};
+  
+  rawStatistikDates.forEach(item => {
+    let tglStr = typeof item === 'object' ? item.tanggal : item;
+    let statusAsli = typeof item === 'object' ? (item.status || '') : '';
+    let d = new Date(tglStr);
+    let key = '';
+    
+    if (filterType === 'bulan') key = d.toLocaleString('id-ID', { month: 'short', year: 'numeric' }); 
+    else if (filterType === 'hari') key = d.toLocaleString('id-ID', { day: '2-digit', month: 'short' }); 
+    else if (filterType === 'minggu') {
+      let weekNum = Math.ceil(d.getDate() / 7);
+      key = "Mg " + weekNum + " " + d.toLocaleString('id-ID', { month: 'short' }); 
+    }
+    
+    if (!grouped[key]) grouped[key] = { total: 0, selesai: 0, proses: 0, ditolak: 0 };
+    grouped[key].total++;
+    
+    let sLower = statusAsli.toLowerCase().trim();
+    if (sLower === 'belum terverifikasi' || sLower === 'dalam proses') grouped[key].proses++;
+    else if (sLower.includes('selesai') || sLower.includes('terverifikasi')) grouped[key].selesai++;
+    else if (sLower.includes('tolak')) grouped[key].ditolak++;
+    else grouped[key].proses++;
+  });
+
+  let labels = Object.keys(grouped).slice(-8); 
+  let dataTotal = labels.map(l => grouped[l].total);
+  let dataSelesai = labels.map(l => grouped[l].selesai);
+  let dataProses = labels.map(l => grouped[l].proses);
+  let dataDitolak = labels.map(l => grouped[l].ditolak);
+
+  const ctx = document.getElementById('barChart').getContext('2d');
+  if (chartBarInstance) chartBarInstance.destroy(); 
+
+  chartBarInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [
+        { label: 'Total Laporan', data: dataTotal, backgroundColor: '#0ea5e9', grouped: false, categoryPercentage: 0.55, barPercentage: 1.0, order: 2, borderRadius: 4 },
+        { label: 'Terverifikasi', data: dataSelesai, backgroundColor: '#37a25c', grouped: true, categoryPercentage: 0.55, barPercentage: 0.7, order: 1 },
+        { label: 'Belum Terverifikasi', data: dataProses, backgroundColor: '#ffc107', grouped: true, categoryPercentage: 0.55, barPercentage: 0.7, order: 1 },
+        { label: 'Ditolak', data: dataDitolak, backgroundColor: '#dc3545', grouped: true, categoryPercentage: 0.55, barPercentage: 0.7, order: 1, borderRadius: { topLeft: 4, topRight: 4 } }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, font: {size: 11} } }, tooltip: { mode: 'index', intersect: false } },
+      scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { precision: 0 } } }
+    }
+  });
+}
+
+
+/* ==================================================
+   RENDER SEMUA DOUGHNUT & BAR LAINNYA
+================================================== */
+function renderDonutChart() {
+  const ctx = document.getElementById('donutChart').getContext('2d');
+  if (chartDonutInstance) chartDonutInstance.destroy(); 
+
+  const labels = Object.keys(rawJenisData);
+  const data = Object.values(rawJenisData);
+
+  const drawAngkaDonutPlugin = {
+    id: 'drawAngkaDonutPlugin',
+    afterDatasetsDraw(chart, args, pluginOptions) {
+      const { ctx, data } = chart;
+      ctx.save();
+      chart.getDatasetMeta(0).data.forEach((datapoint, index) => {
+        const value = data.datasets[0].data[index];
+        if(value > 0) { 
+          const pos = datapoint.tooltipPosition();
+          ctx.font = 'bold 12px "Plus Jakarta Sans", Arial';
+          ctx.fillStyle = '#ffffff'; 
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.shadowColor = 'rgba(0,0,0,0.5)';
+          ctx.shadowBlur = 3;
+          ctx.fillText(value, pos.x, pos.y); 
+        }
+      });
+      ctx.restore();
+    }
+  };
+
+  chartDonutInstance = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: data,
+        backgroundColor: ['#2196F3', '#4CAF50', '#FF9800', '#F44336', '#9C27B0', '#FFEB3B', '#795548', '#009688'],
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { 
+          position: 'right',
+          labels: { 
+            usePointStyle: false, // Legenda bentuk kotak
+            boxWidth: 14, 
+            font: {size: 11},
+            // Nambahin angka di sebelah kiri teks legenda
+            generateLabels: function(chart) {
+              const data = chart.data;
+              if (data.labels.length && data.datasets.length) {
+                return data.labels.map(function(label, i) {
+                  const value = data.datasets[0].data[i];
+                  return {
+                    text: value + ' - ' + label, 
+                    fillStyle: data.datasets[0].backgroundColor[i],
+                    hidden: isNaN(data.datasets[0].data[i]),
+                    index: i,
+                    lineWidth: 0
+                  };
+                });
+              }
+              return [];
+            }
+          } 
+        } 
+      }
+    },
+    plugins: [drawAngkaDonutPlugin]
+  });
+}
+
+function renderLokasiChart() {
+  const ctx = document.getElementById('lokasiChart').getContext('2d');
+  if (chartLokasiInstance) chartLokasiInstance.destroy(); 
+
+  let arrLokasi = Object.keys(rawLokasiData).map(key => {
+    return { nama: key, jumlah: rawLokasiData[key] };
+  });
+  arrLokasi.sort((a, b) => b.jumlah - a.jumlah);
+
+  let finalLabels = [];
+  let finalData = [];
+  
+  if(arrLokasi.length > 5) {
+     let totalLainnya = 0;
+     for(let i = 0; i < 5; i++){
+        finalLabels.push(arrLokasi[i].nama);
+        finalData.push(arrLokasi[i].jumlah);
+     }
+     for(let i = 5; i < arrLokasi.length; i++){
+        totalLainnya += arrLokasi[i].jumlah;
+     }
+     finalLabels.push("Lainnya");
+     finalData.push(totalLainnya);
+  } else {
+     arrLokasi.forEach(item => {
+        finalLabels.push(item.nama);
+        finalData.push(item.jumlah);
+     });
+  }
+
+  // Plugin untuk nulis angka putih di dalam pie chart lokasi
+  const drawAngkaLokasiPlugin = {
+    id: 'drawAngkaLokasiPlugin',
+    afterDatasetsDraw(chart, args, pluginOptions) {
+      const { ctx, data } = chart;
+      ctx.save();
+      chart.getDatasetMeta(0).data.forEach((datapoint, index) => {
+        const value = data.datasets[0].data[index];
+        if(value > 0) { 
+          const pos = datapoint.tooltipPosition();
+          ctx.font = 'bold 12px "Plus Jakarta Sans", Arial';
+          ctx.fillStyle = '#ffffff'; 
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.shadowColor = 'rgba(0,0,0,0.5)';
+          ctx.shadowBlur = 3;
+          ctx.fillText(value, pos.x, pos.y); 
+        }
+      });
+      ctx.restore();
+    }
+  };
+
+  chartLokasiInstance = new Chart(ctx, {
+    type: 'doughnut', 
+    data: {
+      labels: finalLabels,
+      datasets: [{
+        data: finalData,
+        backgroundColor: ['#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#00bcd4', '#9e9e9e'],
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { 
+          position: 'right',
+          labels: { 
+            usePointStyle: false, // Legenda bentuk kotak
+            boxWidth: 14, 
+            font: {size: 11},
+            // Nambahin angka di sebelah kiri teks legenda
+            generateLabels: function(chart) {
+              const data = chart.data;
+              if (data.labels.length && data.datasets.length) {
+                return data.labels.map(function(label, i) {
+                  const value = data.datasets[0].data[i];
+                  return {
+                    text: value + ' - ' + label, 
+                    fillStyle: data.datasets[0].backgroundColor[i],
+                    hidden: isNaN(data.datasets[0].data[i]),
+                    index: i,
+                    lineWidth: 0
+                  };
+                });
+              }
+              return [];
+            }
+          }
+        } 
+      }
+    },
+    plugins: [drawAngkaLokasiPlugin] 
+  });
+}
+
+function renderAnonimitasChart() {
+  const ctx = document.getElementById('anonimitasChart').getContext('2d');
+  if (chartAnonimInstance) chartAnonimInstance.destroy();
+  chartAnonimInstance = new Chart(ctx, {
+    type: 'pie', 
+    data: { labels: ['Identitas Terbuka', 'Anonim / Dirahasiakan'], datasets: [{ data: [rawAnonimData.terbuka, rawAnonimData.anonim], backgroundColor: ['#37a25c', '#8a9a9d'], borderWidth: 2 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: {font: {size: 12}} } } }
+  });
+}
+
+function renderInstansiChart() {
+  const ctx = document.getElementById('instansiChart').getContext('2d');
+  if (chartInstansiInstance) chartInstansiInstance.destroy();
+  let entries = Object.entries(rawInstansiData).sort((a,b) => b[1] - a[1]).slice(0,5);
+  chartInstansiInstance = new Chart(ctx, {
+    type: 'bar',
+    data: { labels: entries.map(e => e[0]), datasets: [{ label: 'Jumlah Pelapor', data: entries.map(e => e[1]), backgroundColor: '#37a25c', borderRadius: 4 }] },
+    options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { precision: 0 } }, y: { grid: { display: false }, ticks: { font: {size: 11} } } } }
+  });
+}
+
+
+/* ==================================================
+   REGULASI 
+================================================== */
+let regulasiDataAll = [];
+
+function loadRegulasiAdmin(){
+  google.script.run
+  .withSuccessHandler(function(data){
+    regulasiDataAll = data;
+    let html = '';
+    
+    if(!data || data.length === 0){
+      html = '<div class="col-12 text-muted text-center py-4">Belum ada data regulasi terdaftar.</div>';
+      document.getElementById('regulasiListAdmin').innerHTML = html;
+      return;
+    }
+    
+    data.forEach(function(item){
+      html +=
+      '<div class="col-md-6">' +
+        '<div class="card-panel h-100 d-flex flex-column justify-content-between">' +
+          '<div>' +
+            '<h5><i class="bi bi-journal-text text-primary"></i> ' + item.judul + '</h5>' +
+            '<p class="mb-2 text-secondary">' + (item.deskripsi || '') + '</p>' +
+            '<a href="' + item.link + '" target="_blank" class="btn btn-sm btn-outline-primary mb-3"><i class="bi bi-link-45deg"></i> Lihat Dokumen</a>' +
+          '</div>' +
+          '<div class="mt-auto d-flex justify-content-between align-items-center pt-3 border-top">' +
+            '<span class="badge ' + (item.status === 'Aktif' ? 'bg-success' : 'bg-secondary') + '">' + item.status + '</span>' +
+            '<div>' +
+              '<button class="btn btn-sm btn-outline-primary me-1" onclick="editRegulasi(\'' + item.id + '\')"><i class="bi bi-pencil"></i> Edit</button>' +
+              '<button class="btn btn-sm btn-outline-danger" onclick="hapusRegulasiUI(\'' + item.id + '\')"><i class="bi bi-trash"></i> Hapus</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    });
+    
+    document.getElementById('regulasiListAdmin').innerHTML = html;
+  })
+  .withFailureHandler(function(err){
+    document.getElementById('regulasiAlert').innerHTML =
+    '<div class="alert alert-danger">Gagal memuat data regulasi: ' + err.message + '</div>';
+  })
+  .getRegulasiAdmin();
+}
+
+function bukaModalRegulasi(){
+  document.getElementById('formRegulasi').reset();
+  document.getElementById('regulasiId').value = '';
+  document.getElementById('modalRegulasiTitle').innerText = 'Tambah Regulasi';
+  
+  var modalEl = document.getElementById('modalRegulasi');
+  var instance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+  instance.show();
+}
+
+function editRegulasi(id){
+  const item = regulasiDataAll.find(function(p){ return p.id === id; });
+  if(!item) return;
+
+  document.getElementById('regulasiId').value = item.id;
+  document.getElementById('regulasiJudul').value = item.judul;
+  document.getElementById('regulasiDeskripsi').value = item.deskripsi || '';
+  document.getElementById('regulasiLink').value = item.link || '';
+  document.getElementById('regulasiStatus').value = item.status;
+
+  document.getElementById('modalRegulasiTitle').innerText = 'Edit Regulasi';
+  var modalEl = document.getElementById('modalRegulasi');
+  var instance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+  instance.show();
+}
+
+function hapusRegulasiUI(id){
+  if(!confirm('Yakin ingin menghapus regulasi ini?')) return;
+  document.getElementById('regulasiAlert').innerHTML = '<div class="text-muted mb-3"><div class="spinner-border spinner-border-sm" role="status"></div> Menghapus...</div>';
+  
+  google.script.run
+  .withSuccessHandler(function(res){
+    document.getElementById('regulasiAlert').innerHTML =
+    '<div class="alert alert-' + (res.success ? 'success' : 'danger') + '">' + res.message + '</div>';
+    loadRegulasiAdmin();
+  })
+  .withFailureHandler(function(err){
+    document.getElementById('regulasiAlert').innerHTML =
+    '<div class="alert alert-danger">' + err.message + '</div>';
+  })
+  .hapusRegulasi(id);
+}
+
+function simpanRegulasi(e){
+  e.preventDefault();
+  const btn = document.getElementById('btnSimpanRegulasi');
+  btn.disabled = true;
+  btn.innerText = 'Menyimpan...';
+
+  const data = {
+    id: document.getElementById('regulasiId').value,
+    judul: document.getElementById('regulasiJudul').value,
+    deskripsi: document.getElementById('regulasiDeskripsi').value,
+    link: document.getElementById('regulasiLink').value,
+    status: document.getElementById('regulasiStatus').value
+  };
+
+  google.script.run
+  .withSuccessHandler(function(res){
+    btn.disabled = false;
+    btn.innerText = 'Simpan';
+    document.getElementById('regulasiAlert').innerHTML =
+    '<div class="alert alert-' + (res.success ? 'success' : 'danger') + '">' + res.message + '</div>';
+    
+    if(res.success){
+      var modalEl = document.getElementById('modalRegulasi');
+      var instance = bootstrap.Modal.getInstance(modalEl);
+      if(instance) instance.hide();
+      loadRegulasiAdmin();
+    }
+  })
+  .withFailureHandler(function(err){
+    btn.disabled = false;
+    btn.innerText = 'Simpan';
+    document.getElementById('regulasiAlert').innerHTML = '<div class="alert alert-danger">' + err.message + '</div>';
+  })
+  [data.id ? 'updateRegulasi' : 'tambahRegulasi'](data);
+}
+
+
+/* ==================================================
+KELOLA PENGGUNA (ADMIN) - FULL CRUD
+================================================== */
+let userDataAll = [];
+
+function loadUsers() {
+  google.script.run.withSuccessHandler(function(data) {
+    userDataAll = data;
+    let html = '';
+    data.forEach(function(item, index) {
+      html += '<tr>' +
+        '<td>' + (index + 1) + '</td>' +
+        '<td>' + item.username + '</td>' +
+        '<td>' + item.nama + '</td>' +
+        '<td>' + item.instansi + '</td>' +
+        '<td>' + item.jabatan + '</td>' +
+        '<td>' + getRoleBadge(item.role) + '</td>' +
+        '<td><span class="badge ' + (item.status === 'Aktif' ? 'bg-success' : 'bg-danger') + '">' + item.status + '</span></td>' +
+        '<td>' +
+          '<button class="btn btn-sm btn-outline-primary me-1" onclick="editUser(\'' + item.id + '\')" title="Edit"><i class="bi bi-pencil"></i></button>' +
+          '<button class="btn btn-sm btn-outline-danger" onclick="hapusUserUI(\'' + item.id + '\')" title="Hapus"><i class="bi bi-trash"></i></button>' +
+        '</td>' +
+        '</tr>';
+    });
+    document.getElementById('tabelUser').innerHTML = html;
+  }).getUsers();
+}
+
+// FUNGSI BUKA MODAL TAMBAH USER
+function bukaModalTambahUser() {
+  document.getElementById('formTambahUser').reset();
+  var modalEl = document.getElementById('modalTambahUser');
+  var instance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+  instance.show();
+}
+
+// FUNGSI SIMPAN TAMBAH USER
+document.getElementById('formTambahUser').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const btn = document.querySelector('#formTambahUser button[type="submit"]');
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menyimpan...';
+  btn.disabled = true;
+
+  const data = {
+    username: document.getElementById('userUsername').value,
+    password: document.getElementById('userPassword').value,
+    nama: document.getElementById('userNama').value,
+    instansi: document.getElementById('userInstansi').value,
+    jabatan: document.getElementById('userJabatan').value,
+    role: document.getElementById('userRoleInput').value
+  };
+
+  google.script.run.withSuccessHandler(function(res) {
+    document.getElementById('userAlert').innerHTML = '<div class="alert alert-success">' + res.message + '</div>';
+    var modalEl = document.getElementById('modalTambahUser');
+    var instance = bootstrap.Modal.getInstance(modalEl);
+    if(instance) instance.hide();
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+    loadUsers();
+  }).withFailureHandler(function(err) {
+    document.getElementById('userAlert').innerHTML = '<div class="alert alert-danger">' + err.message + '</div>';
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+  }).tambahUser(data);
+});
+
+// FUNGSI PANGGIL MODAL EDIT USER (INI YANG BIKIN TOMBOL PENSIL JALAN!)
+function editUser(id) {
+  const user = userDataAll.find(u => String(u.id) === String(id));
+  if (!user) {
+    alert("Data pengguna tidak ditemukan! Silakan refresh halaman.");
+    return;
+  }
+  
+  document.getElementById('editUserId').value = user.id;
+  document.getElementById('editUserUsername').value = user.username;
+  document.getElementById('editUserPassword').value = ''; 
+  document.getElementById('editUserNama').value = user.nama;
+  document.getElementById('editUserInstansi').value = user.instansi;
+  document.getElementById('editUserJabatan').value = user.jabatan;
+  document.getElementById('editUserRoleInput').value = user.role;
+  document.getElementById('editUserStatus').value = user.status || 'Aktif';
+
+  var modalEl = document.getElementById('modalEditUser');
+  var instance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+  instance.show();
+}
+
+// FUNGSI SIMPAN EDIT USER
+document.getElementById('formEditUser').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const btn = document.querySelector('#formEditUser button[type="submit"]');
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menyimpan...';
+  btn.disabled = true;
+
+  const data = {
+    id: document.getElementById('editUserId').value,
+    username: document.getElementById('editUserUsername').value,
+    password: document.getElementById('editUserPassword').value, 
+    nama: document.getElementById('editUserNama').value,
+    instansi: document.getElementById('editUserInstansi').value,
+    jabatan: document.getElementById('editUserJabatan').value,
+    role: document.getElementById('editUserRoleInput').value,
+    status: document.getElementById('editUserStatus').value
+  };
+
+  google.script.run.withSuccessHandler(function(res) {
+    document.getElementById('userAlert').innerHTML = '<div class="alert alert-' + (res.success ? 'success' : 'danger') + '">' + res.message + '</div>';
+    if(res.success){
+      var modalEl = document.getElementById('modalEditUser');
+      var instance = bootstrap.Modal.getInstance(modalEl);
+      if(instance) instance.hide();
+      loadUsers();
+    }
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+  }).withFailureHandler(function(err) {
+    document.getElementById('userAlert').innerHTML = '<div class="alert alert-danger">' + err.message + '</div>';
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+  }).updateUser(data);
+});
+
+// FUNGSI HAPUS USER
+function hapusUserUI(id) {
+  if (!confirm('Yakin ingin menghapus pengguna ini secara permanen?')) return;
+  document.getElementById('userAlert').innerHTML = '<div class="text-muted"><div class="spinner-border spinner-border-sm" role="status"></div> Menghapus...</div>';
+  
+  google.script.run.withSuccessHandler(function(res) {
+    document.getElementById('userAlert').innerHTML = '<div class="alert alert-' + (res.success ? 'success' : 'danger') + '">' + res.message + '</div>';
+    loadUsers();
+  }).withFailureHandler(function(err) {
+    document.getElementById('userAlert').innerHTML = '<div class="alert alert-danger">' + err.message + '</div>';
+  }).hapusUser(id);
+}
+
+/* ==================================================
+AUTO LOGIN
+================================================== */
+window.onload = function(){
+  const saved = localStorage.getItem('SIGAR_USER');
+  if(saved){
+    try{
+      currentUser = JSON.parse(saved);
+      document.getElementById('loginPage').style.display = 'none';
+      document.getElementById('appPage').style.display = 'block';
+      initializeApp();
+    }catch(e){
+      localStorage.removeItem('SIGAR_USER');
+    }
+  }
+};
+
+</script>
+
+
+</body>
+
+</html>

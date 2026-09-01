@@ -1,0 +1,3752 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>SIGAR</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+rel="stylesheet">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+(function(){
+  var meta = document.querySelector('meta[name="viewport"]');
+  var isi = 'width=device-width, initial-scale=1.0';
+  if(!meta){
+    meta = document.createElement('meta');
+    meta.name = 'viewport';
+    document.head.appendChild(meta);
+  }
+  meta.setAttribute('content', isi);
+})();
+</script>
+
+<style>
+
+*{
+box-sizing:border-box;
+}
+img, svg, video, canvas{
+  max-width:100%;
+  height:auto;
+}
+
+body{
+margin:0;
+font-family:'Plus Jakarta Sans',Arial,Helvetica,sans-serif;
+background:#f4f7f9;
+color:#17323a;
+}
+
+.hidden{
+display:none!important;
+}
+
+
+/* LOGIN */
+
+#loginPage{
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+background:linear-gradient(
+135deg,
+#007f7b,
+#00635f
+);
+padding:20px;
+}
+
+.login-box{
+width:100%;
+max-width:430px;
+background:white;
+border-radius:20px;
+padding:35px;
+box-shadow:0 20px 50px rgba(0,0,0,.2);
+}
+
+.login-logo{
+text-align:center;
+margin-bottom:25px;
+}
+
+.login-logo i{
+font-size:55px;
+color:#009688;
+}
+
+.login-logo h2{
+font-weight:bold;
+margin-top:10px;
+}
+
+.login-logo p{
+color:#6c757d;
+}
+
+.form-control,
+.form-select{
+padding:12px;
+border-radius:10px;
+}
+
+.btn-login{
+width:100%;
+padding:12px;
+border-radius:10px;
+background:#007f7b;
+color:white;
+border:0;
+font-weight:bold;
+}
+
+.btn-login:hover{
+background:#00635f;
+color:white;
+}
+
+
+/* APP */
+
+#appPage{
+display:none;
+}
+
+.sidebar{
+position:fixed;
+left:0;
+top:0;
+bottom:0;
+width:250px;
+background:#007d78;
+color:white;
+z-index:1000;
+padding:15px;
+overflow-y:auto;
+}
+
+.brand{
+display:flex;
+align-items:center;
+gap:12px;
+padding:10px;
+margin-bottom:20px;
+}
+
+.brand-icon{
+width:50px;
+height:50px;
+background:white;
+color:#007d78;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:25px;
+}
+
+.brand h4{
+margin:0;
+font-size:22px;
+}
+
+.brand small{
+font-size:11px;
+}
+
+.menu{
+list-style:none;
+padding:0;
+margin:0;
+}
+
+.menu li{
+margin-bottom:5px;
+}
+
+.menu button{
+width:100%;
+border:0;
+background:transparent;
+color:white;
+text-align:left;
+padding:13px;
+border-radius:8px;
+font-size:14px;
+}
+
+.menu button:hover,
+.menu button.active{
+background:white;
+color:#006f6a;
+}
+
+.menu i{
+width:25px;
+}
+
+.menu-divider{
+border-top:1px solid rgba(255,255,255,.25);
+margin:10px 5px;
+}
+
+.menu-label{
+font-size:11px;
+text-transform:uppercase;
+letter-spacing:.5px;
+opacity:.7;
+padding:8px 13px 4px;
+}
+
+.help-box{
+position:relative;
+margin-top:15px;
+border:1px solid rgba(255,255,255,.4);
+border-radius:10px;
+padding:15px;
+font-size:12px;
+}
+
+
+/* MAIN */
+
+.main{
+margin-left:250px;
+min-height:100vh;
+}
+
+.topbar{
+height:80px;
+background:white;
+border-bottom:1px solid #e4e9ec;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 30px;
+}
+
+.instansi{
+font-weight:bold;
+font-size:17px;
+}
+
+.user-area{
+display:flex;
+align-items:center;
+gap:15px;
+}
+
+.user-avatar{
+width:40px;
+height:40px;
+border-radius:50%;
+background:#e8f1f2;
+display:flex;
+align-items:center;
+justify-content:center;
+color:#006f6a;
+}
+
+.content{
+padding:30px;
+}
+
+
+/* DASHBOARD */
+
+.welcome{
+margin-bottom:25px;
+}
+
+.welcome h2{
+font-weight:bold;
+}
+
+.stat-card{
+background:white;
+border-radius:14px;
+padding:20px;
+height:100%;
+border:1px solid #e2e9eb;
+}
+
+.stat-icon{
+width:55px;
+height:55px;
+border-radius:12px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:25px;
+margin-bottom:15px;
+}
+
+.stat-number{
+font-size:30px;
+font-weight:bold;
+}
+
+.card-panel{
+background:white;
+border-radius:14px;
+padding:20px;
+border:1px solid #e2e9eb;
+height:100%;
+}
+
+.table{
+font-size:13px;
+}
+
+.badge-status{
+padding:7px 10px;
+border-radius:8px;
+font-size:11px;
+}
+
+.badge-role{
+padding:5px 9px;
+border-radius:8px;
+font-size:11px;
+}
+
+
+/* PAGE */
+
+.page-title{
+margin-bottom:25px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+}
+
+.page-title h2{
+font-weight:bold;
+margin:0;
+}
+
+
+/* FORM */
+
+.step{
+display:flex;
+justify-content:space-between;
+margin-bottom:25px;
+}
+
+.step-item{
+flex:1;
+text-align:center;
+font-size:12px;
+}
+
+.step-number{
+width:30px;
+height:30px;
+border-radius:50%;
+background:#ddd;
+display:inline-flex;
+align-items:center;
+justify-content:center;
+margin-bottom:5px;
+}
+
+.step-item.active .step-number{
+background:#007d78;
+color:white;
+}
+
+
+/* ==================================================
+LANDING PAGE (PUBLIK)
+================================================== */
+
+#landingPage{
+background:#f4f7f9;
+}
+.top-info-bar{
+background:#37a25c;
+color:white;
+font-size:12.5px;
+font-weight:600;
+text-align:center;
+padding:7px 12px;
+display:flex;
+align-items:center;
+justify-content:center;
+flex-wrap:wrap;
+gap:8px;
+}
+
+.top-info-sep{
+opacity:.6;
+}
+
+@media(max-width:560px){
+  .top-info-bar{
+    font-size:11.5px;
+    padding:6px 10px;
+    gap:6px;
+  }
+}
+.landing-nav{
+position:sticky;
+top:0;
+z-index:1000;
+background:#ffffff;
+border-bottom:1px solid #eef2f1;
+padding:16px 5%;
+display:flex;
+align-items:center;
+justify-content:space-between;
+box-shadow:0 2px 12px rgba(0,30,28,.06);
+gap:16px;
+}
+
+.landing-nav .brand{
+padding:0;
+margin:0;
+}
+
+.landing-nav .brand-icon{
+width:42px;
+height:42px;
+font-size:20px;
+}
+
+.landing-nav .brand h4{
+font-size:19px;
+color:#0d2420;
+font-weight:800;
+}
+
+.landing-nav .brand small{
+color:#5c6b6d;
+}
+
+.landing-nav-links{
+display:flex;
+align-items:center;
+gap:32px;
+}
+.landing-nav-links a{
+position:relative;
+color:#3b4a4c;
+text-decoration:none;
+font-size:14px;
+font-weight:600;
+padding:9px 14px;
+border-radius:999px;
+transition:color .2s ease, background .25s ease;
+}
+
+.landing-nav-links a:hover{
+color:#0d2420;
+background:#f2faf6;
+}
+
+.landing-nav-links a::after{
+content:'';
+position:absolute;
+left:14px;
+right:14px;
+bottom:-2px;
+height:2px;
+background:#37a25c;
+border-radius:2px;
+transform:scaleX(0);
+transform-origin:center;
+transition:transform .35s cubic-bezier(.4,0,.2,1);
+}
+
+.landing-nav-links a.nav-active{
+color:#37a25c;
+}
+
+.landing-nav-links a.nav-active::after{
+transform:scaleX(1);
+}
+.nav-right{
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.btn-landing-login{
+background:transparent;
+color:white;
+border:1.5px solid rgba(255,255,255,.65);
+padding:9px 20px;
+border-radius:999px;
+font-weight:700;
+font-size:14px;
+white-space:nowrap;
+transition:background .15s ease, color .15s ease;
+}
+
+.btn-landing-login:hover{
+background:white;
+color:#007d78;
+}
+
+.nav-toggle-btn{
+background:transparent;
+border:1.5px solid #d8e2e0;
+color:#0d2420;
+width:40px;
+height:40px;
+border-radius:10px;
+font-size:18px;
+display:flex;
+align-items:center;
+justify-content:center;
+flex-shrink:0;
+}
+
+.mobile-nav-panel{
+display:none;
+flex-direction:column;
+background:rgba(255,255,255,.65);
+backdrop-filter:blur(16px);
+-webkit-backdrop-filter:blur(16px);
+padding:6px 5% 18px;
+position:sticky;
+top:73px;
+z-index:999;
+border-bottom:1px solid rgba(255,255,255,.4);
+box-shadow:0 8px 24px rgba(0,0,0,.08);
+}
+
+.mobile-nav-panel.open{
+display:flex;
+}
+
+.mobile-nav-panel a{
+color:#0d2420;
+text-decoration:none;
+padding:13px 4px;
+font-weight:600;
+font-size:14.5px;
+border-bottom:1px solid rgba(0,0,0,.08);
+}
+
+.mobile-nav-panel a:last-child{
+border-bottom:0;
+}
+
+
+/* HERO */
+
+.hero-section{
+padding:64px 5% 30px;
+background:linear-gradient(180deg,#ffffff 0%,#f6fbfa 100%);
+}
+
+.hero-grid{
+max-width:1220px;
+margin:0 auto;
+display:grid;
+grid-template-columns:1.05fr .95fr;
+gap:56px;
+align-items:center;
+}
+
+.badge-pill{
+display:inline-flex;
+align-items:center;
+gap:7px;
+background:#f2faf6;
+color:#37a25c;
+font-size:13px;
+font-weight:700;
+padding:9px 18px;
+border-radius:999px;
+margin-bottom:20px;
+}
+
+.hero-title{
+font-size:clamp(28px,4vw,42px);
+font-weight:800;
+line-height:1.18;
+color:#0d2420;
+margin-bottom:18px;
+letter-spacing:-.5px;
+}
+
+.hero-title .text-accent{
+color:#37a25c;
+}
+
+.hero-tagline{
+font-size:15px;
+font-weight:700;
+font-style:italic;
+color:#17323a;
+max-width:480px;
+margin-bottom:16px;
+line-height:1.5;
+border-left:3px solid #37a25c;
+padding-left:12px;
+}
+
+.hero-desc{
+font-size:16px;
+color:#5c6b6d;
+max-width:480px;
+margin-bottom:30px;
+line-height:1.65;
+}
+
+.hero-actions-new{
+display:flex;
+gap:14px;
+flex-wrap:wrap;
+margin-bottom:34px;
+}
+
+.btn-cta-solid{
+background:#37a25c;
+color:white;
+padding:13px 24px;
+border-radius:10px;
+font-weight:700;
+font-size:14.5px;
+text-decoration:none;
+display:inline-flex;
+align-items:center;
+gap:8px;
+transition:background .15s ease;
+}
+
+.btn-cta-solid:hover{
+background:#0a544c;
+color:white;
+}
+
+.btn-cta-outline{
+background:white;
+color:#12262b;
+border:1.5px solid #d8e2e0;
+padding:13px 24px;
+border-radius:10px;
+font-weight:700;
+font-size:14.5px;
+text-decoration:none;
+display:inline-flex;
+align-items:center;
+gap:8px;
+transition:border-color .15s ease, color .15s ease;
+}
+
+.btn-cta-outline:hover{
+border-color:#0d6b60;
+color:#0d6b60;
+}
+
+.hero-chips{
+display:flex;
+gap:28px;
+flex-wrap:wrap;
+font-size:13px;
+color:#3b4a4c;
+}
+
+.hero-chips span{
+display:flex;
+align-items:center;
+gap:8px;
+font-weight:600;
+}
+
+.hero-chips i{
+color:#0d6b60;
+}
+
+/* Versi saya terakhir */
+.hero-illustration{
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
+
+}
+
+.hero-illustration img{
+width:120%;
+height:auto;
+max-width:900px;
+object-fit:cover;
+display:block;
+margin:0 auto;
+mix-blend-mode:multiply;
+}
+
+.hero-illustration .placeholder-note{
+color:#5c8f88;
+font-size:13px;
+text-align:center;
+font-weight:600;
+padding:60px 20px;
+border-radius:26px;
+width:100%;
+}
+
+
+/* FEATURES */
+
+.feature-section{
+padding:26px 5% 10px;
+}
+
+.feature-grid{
+max-width:1220px;
+margin:0 auto;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:20px;
+}
+
+.feature-card{
+background:white;
+border:1px solid #e2e9eb;
+border-radius:16px;
+padding:22px;
+box-shadow:0 6px 20px rgba(0,50,45,.04);
+display:flex;
+align-items:flex-start;
+gap:16px;
+}
+.feature-icon{
+width:56px;
+height:56px;
+border-radius:50%;
+background:#e6f4f2;
+color:#0d6b60;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:20px;
+flex-shrink:0;
+overflow:hidden;
+}
+
+.feature-icon img{
+width:80px;
+height:80px;
+object-fit:contain;
+}
+
+.feature-card-body h5{
+font-weight:700;
+margin-bottom:6px;
+font-size:16px;
+color:#0d2420;
+}
+
+.feature-card-body p{
+color:#5c6b6d;
+font-size:13.5px;
+margin-bottom:14px;
+line-height:1.55;
+}
+
+.feature-underline{
+display:block;
+width:28px;
+height:3px;
+background:#0d6b60;
+border-radius:2px;
+}
+
+
+/* STATS */
+
+.stats-section{
+padding:44px 5%;
+}
+
+.stats-band{
+max-width:1220px;
+margin:0 auto;
+background:#f2faf6;
+border:1px solid #d9ebe2;
+border-radius:12px;
+padding:32px 40px;
+display:flex;
+flex-wrap:wrap;
+align-items:center;
+justify-content:space-between;
+gap:28px;
+}
+
+.stats-heading h4{
+font-weight:800;
+color:#37a25c;
+margin-bottom:4px;
+font-size:19px;
+}
+
+.stats-heading p{
+color:#5c6b6d;
+font-size:13.5px;
+margin:0;
+}
+
+.stats-items{
+display:flex;
+gap:34px;
+flex-wrap:wrap;
+}
+
+.stats-item{
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.stats-icon{
+width:44px;
+height:44px;
+border-radius:12px;
+background:#e3f8eb;
+color:#0d6b60;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:19px;
+flex-shrink:0;
+overflow:hidden;
+}
+
+.stats-icon img{
+width:60px;
+height:60px;
+object-fit:contain;
+}
+
+.stats-number{
+font-size:24px;
+font-weight:800;
+color:#0d2420;
+line-height:1;
+}
+
+.stats-label{
+font-size:12.5px;
+color:#5c6b6d;
+margin-top:2px;
+}
+
+/* ===========================
+   STATISTIK PENGUNJUNG
+=========================== */
+.footer-stats-minimal {
+  grid-column: 2 / 5; 
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 18px; 
+  margin-top: -90px; 
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.85);
+  align-self: start;
+}
+
+.footer-stats-minimal .stat-title {
+  width: 100%;
+  font-size: 11px;
+  font-weight: 800;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 2px;
+}
+
+.footer-stats-minimal .stat-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.footer-stats-minimal .stat-item i {
+  color: #8fd6ac;
+  font-size: 15px;
+}
+.footer-stats-minimal .stat-item strong {
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+@media(max-width: 900px) {
+  .footer-stats-minimal {
+    grid-column: 1 / -1; 
+    justify-content: flex-start;
+    margin-top: 20px; 
+    padding-top: 20px;
+  }
+}
+
+/* ===========================
+   CTA SECTION
+=========================== */
+
+.cta-section{
+    padding:10px 5% 60px;
+}
+
+.cta-band{
+    max-width:1220px;
+    margin:auto;
+
+    display:grid;
+    grid-template-columns:1fr 340px;
+    align-items:center;
+    gap:16px;
+
+    background:#f2faf6;
+    border:1px solid #d9ebe2;
+    border-radius:12px;
+
+    padding:10px 14px;
+}
+
+
+/* ===========================
+   LEFT SIDE
+=========================== */
+
+.cta-message{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.cta-icon{
+    width:100px;
+    height:100px;
+    flex-shrink:0;
+}
+
+.cta-icon img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+
+.cta-text h5{
+    margin:0 0 3px;
+    font-size:15px;
+    font-weight:700;
+    color:#2b8d5b;
+    line-height:1.2;
+}
+
+.cta-text p{
+    margin:0;
+    font-size:12px;
+    color:#555;
+    line-height:1.45;
+}
+
+
+/* ===========================
+   RIGHT CARD
+=========================== */
+
+.cta-contact-card{
+
+    background:#fff;
+
+    border:1px solid #dce8e1;
+
+    border-radius:10px;
+
+    padding:10px 16px;
+
+    box-shadow:
+    0 4px 12px rgba(0,0,0,.04);
+
+}
+
+.cta-contact-card h5{
+
+    margin:0;
+
+    font-size:14px;
+
+    font-weight:700;
+
+    color:#2b8d5b;
+
+    line-height:1.2;
+
+}
+
+.cta-contact-card p{
+
+    margin:3px 0 10px;
+
+    font-size:11.5px;
+
+    color:#666;
+
+}
+
+.cta-contact-row{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+}
+
+.cta-contact-row div:last-child{
+    display:flex;
+    flex-direction:column;
+    line-height:1.2;
+}
+
+.cta-contact-row small{
+    font-size:11px;
+    color:#7d8b87;
+    margin-bottom:2px;
+}
+
+.cta-contact-row strong{
+    font-size:16px;
+}
+
+.cta-icon-sm{
+
+    width:34px;
+
+    height:34px;
+
+    border-radius:8px;
+
+    background:#2b8d5b;
+
+    color:#fff;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:15px;
+
+    flex-shrink:0;
+
+}
+
+/* Preview teks terpotong rapi, konsisten di semua card */
+.desc-clamp{
+  display:-webkit-box;
+  -webkit-line-clamp:3;
+  line-clamp:3;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  line-height:1.5;
+  max-height:calc(1.5em * 3);
+  min-height:0;
+  flex:none !important;
+}
+.title-clamp-2{
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  line-height:1.35;
+  max-height:calc(1.35em * 2);
+}
+
+/* Supaya kartu tetap sama tinggi & tombol/link nempel di bawah */
+.regulasi-card-body,
+.news-card-body{
+  display:flex;
+  flex-direction:column;
+  height:100%;
+}
+.regulasi-card-body p,
+.news-card-body p{
+  flex:1;
+  min-height:0;
+}
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+
+@media(max-width:992px){
+
+    .cta-band{
+
+        grid-template-columns:1fr;
+
+        gap:12px;
+
+    }
+
+}
+
+/* SECTIONS LAMA (Lapor / Cek Status / Regulasi / Berita) */
+
+.landing-section{
+padding:60px 5%;
+max-width:1180px;
+margin:0 auto;
+scroll-margin-top:90px;
+}
+
+.landing-section-title{
+text-align:center;
+margin-bottom:40px;
+}
+
+.landing-section-title h2{
+font-weight:800;
+color:#0d2420;
+margin-bottom:8px;
+}
+
+.landing-section-title p{
+color:#6c757d;
+max-width:600px;
+margin:0 auto;
+}
+
+.landing-card{
+background:white;
+border-radius:16px;
+padding:30px;
+border:1px solid #e2e9eb;
+box-shadow:0 6px 20px rgba(0,50,45,.04);
+}
+
+@media(max-width:560px){
+
+.landing-card #kodeCek,
+.landing-card .input-group .btn-cta-solid{
+  font-size:15px;
+}
+
+.input-group:has(#kodeCek){
+  flex-direction:column;
+}
+
+.input-group:has(#kodeCek) #kodeCek{
+  border-radius:10px !important;
+  margin-bottom:10px;
+  padding:14px 16px;
+}
+
+.input-group:has(#kodeCek) .btn-cta-solid{
+  border-radius:10px !important;
+  width:100%;
+  justify-content:center;
+  padding:14px;
+}
+
+}
+
+@media(max-width:560px){
+
+#cekStatusInputGroup{
+  flex-direction:column;
+}
+
+#cekStatusInputGroup #kodeCek{
+  width:100% !important;      /* <-- tambahan penting */
+  border-radius:10px !important;
+  margin-bottom:10px;
+  padding:14px 16px;
+  font-size:15px;
+}
+
+#cekStatusInputGroup .btn-cta-solid{
+  width:100%;
+  border-radius:10px !important;
+  justify-content:center;
+  padding:14px;
+  font-size:15px;
+}
+
+}
+
+
+.cek-result{
+margin-top:25px;
+}
+
+.timeline{
+display:flex;
+justify-content:space-between;
+margin:25px 0 10px;
+position:relative;
+}
+
+.timeline:before{
+content:'';
+position:absolute;
+top:19px;
+left:8%;
+right:8%;
+height:3px;
+background:#e2e9eb;
+z-index:0;
+}
+
+.timeline-step{
+flex:1;
+text-align:center;
+position:relative;
+z-index:1;
+font-size:12.5px;
+}
+
+.timeline-step .t-icon{
+width:40px;
+height:40px;
+border-radius:50%;
+background:#e2e9eb;
+color:#8a9a9d;
+display:flex;
+align-items:center;
+justify-content:center;
+margin:0 auto 8px;
+font-size:18px;
+}
+
+.timeline-step.done .t-icon{
+background:#0d6b60;
+color:white;
+}
+
+.timeline-step.rejected .t-icon{
+background:#dc3545;
+color:white;
+}
+
+.timeline-step.current .t-icon{
+background:#ffc107;
+color:#5a4600;
+}
+
+.news-card{
+background:white;
+border-radius:16px;
+overflow:hidden;
+border:1px solid #e2e9eb;
+height:100%;
+box-shadow:0 6px 20px rgba(0,50,45,.04);
+}
+
+.news-card-icon{
+height:110px;
+background:linear-gradient(135deg,#e8f5f4,#d5eceb);
+color:#0d6b60;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:40px;
+}
+
+.news-card-img{
+height:180px;
+width:100%;
+object-fit:cover;
+}
+
+.news-card-body{
+padding:20px;
+}
+
+.news-card-body h5{
+font-weight:bold;
+margin-bottom:8px;
+}
+
+.news-card-body p{
+color:#5c6b6d;
+font-size:14px;
+margin-bottom:0;
+}
+
+.regulasi-card{
+background:white;
+border-radius:16px;
+border:1px solid #e2e9eb;
+box-shadow:0 6px 20px rgba(0,50,45,.04);
+padding:20px;
+height:100%;
+display:flex;
+gap:16px;
+}
+
+.regulasi-card-icon{
+flex-shrink:0;
+width:52px;
+height:52px;
+border-radius:12px;
+background:linear-gradient(135deg,#e8f5f4,#d5eceb);
+color:#0d6b60;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:22px;
+}
+
+.regulasi-card-body h5{
+font-weight:bold;
+margin-bottom:6px;
+font-size:16px;
+}
+
+.regulasi-card-body p{
+color:#5c6b6d;
+font-size:14px;
+margin-bottom:10px;
+}
+
+.regulasi-card-body a{
+color:#0d6b60;
+font-weight:600;
+font-size:14px;
+text-decoration:none;
+}
+
+.regulasi-card-body a:hover{
+text-decoration:underline;
+}
+
+.landing-footer{
+background:#37a25c;
+color:rgba(255,255,255,.85);
+padding:56px 5% 24px;
+}
+
+.footer-top{
+display:grid;
+grid-template-columns:1.3fr 1fr 1fr 1fr;
+gap:36px;
+max-width:1220px;
+margin:0 auto;
+padding-bottom:36px;
+}
+
+.footer-logo-row{
+display:flex;
+align-items:center;
+gap:12px;
+margin-bottom:14px;
+}
+
+.footer-logo-row img{
+width:42px;
+height:42px;
+object-fit:contain;
+background:white;
+border-radius:8px;
+padding:3px;
+flex-shrink:0;
+}
+
+.footer-logo-row h5{
+margin:0;
+font-weight:800;
+font-size:18px;
+color:white;
+}
+
+.footer-logo-row small{
+opacity:.75;
+font-size:11.5px;
+display:block;
+}
+
+.footer-brand p{
+font-size:13.5px;
+line-height:1.7;
+opacity:.85;
+max-width:320px;
+margin:0 0 16px;
+}
+
+.footer-social{
+display:flex;
+flex-wrap:wrap;
+gap:12px;
+}
+
+.footer-social a{
+display:inline-flex;
+align-items:center;
+gap:7px;
+color:white;
+text-decoration:none;
+font-size:12.5px;
+font-weight:600;
+background:rgba(255,255,255,.12);
+padding:8px 14px;
+border-radius:999px;
+transition:background .15s ease;
+}
+
+.footer-social a:hover{
+background:rgba(255,255,255,.22);
+}
+
+.footer-social i{
+font-size:15px;
+}
+
+.landing-footer h6{
+color:white;
+font-weight:700;
+font-size:13px;
+text-transform:uppercase;
+letter-spacing:.6px;
+margin-bottom:16px;
+opacity:.9;
+}
+
+.footer-links{
+list-style:none;
+padding:0;
+margin:0;
+display:flex;
+flex-direction:column;
+gap:11px;
+}
+
+.footer-links a{
+color:rgba(255,255,255,.8);
+text-decoration:none;
+font-size:13.5px;
+transition:color .15s ease;
+}
+
+.footer-links a:hover{
+color:white;
+text-decoration:underline;
+}
+
+.footer-contact-list{
+list-style:none;
+padding:0;
+margin:0;
+display:flex;
+flex-direction:column;
+gap:13px;
+font-size:13.5px;
+}
+
+.footer-contact-list li{
+display:flex;
+align-items:flex-start;
+gap:10px;
+opacity:.92;
+}
+
+.footer-address-block{
+display:flex;
+flex-direction:column;
+gap:6px;
+}
+
+.footer-maps-link{
+display:inline-flex;
+align-items:center;
+gap:5px;
+color:#8fd6ac;
+text-decoration:none;
+font-size:12.5px;
+font-weight:600;
+}
+
+.footer-maps-link:hover{
+color:white;
+text-decoration:underline;
+}
+
+.footer-hours p{
+font-size:13.5px;
+line-height:1.75;
+opacity:.85;
+margin:0 0 10px;
+}
+
+.footer-hours p:last-child{
+margin-bottom:0;
+}
+
+.footer-bottom{
+border-top:1px solid rgba(255,255,255,.18);
+max-width:1220px;
+margin:0 auto;
+padding-top:20px;
+text-align:center;
+font-size:12.5px;
+opacity:.75;
+}
+
+.footer-support{
+margin-top:6px;
+font-size:12px;
+opacity:.85;
+}
+
+.footer-support strong{
+opacity:1;
+}
+
+@media(max-width:900px){
+.footer-top{
+grid-template-columns:1fr 1fr;
+}
+}
+
+@media(max-width:560px){
+.footer-top{
+grid-template-columns:1fr;
+gap:28px;
+}
+}
+
+
+/* MOBILE */
+
+@media(max-width:900px){
+
+.sidebar{
+width:70px;
+padding:10px;
+}
+
+.sidebar .brand h4,
+.sidebar .brand small,
+.menu span,
+.menu-label,
+.help-box{
+display:none;
+}
+
+.sidebar .brand{
+justify-content:center;
+}
+
+.main{
+margin-left:70px;
+}
+
+.topbar{
+padding:0 15px;
+}
+
+.content{
+padding:15px;
+}
+
+.landing-nav-links{
+display:none!important;
+}
+
+.hero-grid{
+grid-template-columns:1fr;
+}
+
+.hero-illustration{
+order:-1;
+min-height:220px;
+}
+
+.feature-grid{
+grid-template-columns:repeat(2,1fr);
+}
+
+.cta-band{
+grid-template-columns:1fr;
+}
+
+.stats-band{
+justify-content:center;
+text-align:center;
+}
+
+.stats-items{
+justify-content:center;
+}
+
+}
+
+@media(max-width:560px){
+
+.hero-section{
+padding:36px 6% 16px;
+}
+
+.landing-section{
+padding:44px 6%;
+}
+
+.feature-section{
+padding:20px 6% 6px;
+}
+
+.feature-grid{
+grid-template-columns:1fr;
+}
+
+.stats-section{
+padding:32px 6%;
+}
+
+.stats-band{
+padding:24px 20px;
+}
+
+.cta-section{
+padding:6px 6% 44px;
+}
+
+.cta-card{
+padding:22px;
+}
+
+.cta-card-message{
+flex-direction:column;
+}
+
+.hero-actions-new{
+flex-direction:column;
+align-items:stretch;
+}
+
+.btn-cta-solid,
+.btn-cta-outline{
+justify-content:center;
+}
+
+}
+
+
+/* ===========================
+   WIDGET AKSESIBILITAS SUARA
+=========================== */
+
+.a11y-widget{
+position:fixed;
+right:22px;
+bottom:22px;
+z-index:1200;
+}
+
+.a11y-toggle-btn{
+width:56px;
+height:56px;
+border-radius:50%;
+background:#37a25c;
+color:white;
+border:0;
+font-size:26px;
+display:flex;
+align-items:center;
+justify-content:center;
+box-shadow:0 8px 22px rgba(0,40,20,.28);
+cursor:pointer;
+transition:background .15s ease, transform .15s ease;
+}
+
+.a11y-toggle-btn:hover{
+background:#2c8a4d;
+transform:scale(1.05);
+}
+
+.a11y-panel{
+display:none;
+position:absolute;
+right:0;
+bottom:68px;
+width:280px;
+max-height:78vh;
+overflow-y:auto;
+background:white;
+border-radius:14px;
+box-shadow:0 14px 40px rgba(0,20,15,.22);
+border:1px solid #e2e9eb;
+padding:18px;
+}
+
+.a11y-panel.open{
+display:block;
+}
+
+.a11y-panel-title{
+font-weight:800;
+color:#17323a;
+font-size:15px;
+display:flex;
+align-items:center;
+gap:8px;
+margin-bottom:6px;
+}
+
+.a11y-panel-desc{
+font-size:12px;
+color:#5c6b6d;
+margin-bottom:14px;
+line-height:1.5;
+}
+
+.a11y-section-label{
+font-size:11px;
+font-weight:800;
+text-transform:uppercase;
+letter-spacing:.5px;
+color:#37a25c;
+margin-bottom:8px;
+}
+
+.a11y-divider{
+border:0;
+border-top:1px solid #e9eef0;
+margin:16px 0;
+}
+
+.a11y-btn{
+width:100%;
+border:1px solid #d9e2e4;
+background:#f4f7f9;
+color:#17323a;
+padding:10px 12px;
+border-radius:9px;
+font-size:13px;
+font-weight:600;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:7px;
+cursor:pointer;
+transition:background .15s ease;
+}
+
+.a11y-btn:hover{
+background:#e8f1f2;
+}
+
+.a11y-btn-main{
+background:#37a25c;
+color:white;
+border:0;
+margin-bottom:10px;
+}
+
+.a11y-btn-main:hover{
+background:#2c8a4d;
+}
+
+.a11y-btn-row{
+display:flex;
+gap:8px;
+margin-bottom:12px;
+}
+
+.a11y-speed-row{
+margin-bottom:10px;
+}
+
+.a11y-speed-row label{
+font-size:11.5px;
+color:#5c6b6d;
+display:block;
+margin-bottom:4px;
+}
+
+.a11y-speed-row input[type="range"]{
+width:100%;
+}
+
+.a11y-status{
+font-size:11.5px;
+color:#37a25c;
+font-weight:600;
+text-align:center;
+min-height:16px;
+}
+
+.a11y-toggle-row{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
+margin-bottom:12px;
+font-size:12.5px;
+color:#17323a;
+font-weight:600;
+}
+
+.a11y-switch{
+position:relative;
+display:inline-block;
+width:42px;
+height:24px;
+flex-shrink:0;
+}
+
+.a11y-switch input{
+opacity:0;
+width:0;
+height:0;
+}
+
+.a11y-switch-slider{
+position:absolute;
+cursor:pointer;
+top:0;
+left:0;
+right:0;
+bottom:0;
+background:#d9e2e4;
+border-radius:999px;
+transition:background .2s ease;
+}
+
+.a11y-switch-slider::before{
+content:'';
+position:absolute;
+height:18px;
+width:18px;
+left:3px;
+bottom:3px;
+background:white;
+border-radius:50%;
+transition:transform .2s ease;
+}
+
+.a11y-switch input:checked + .a11y-switch-slider{
+background:#37a25c;
+}
+
+.a11y-switch input:checked + .a11y-switch-slider::before{
+transform:translateX(18px);
+}
+
+.a11y-reset-all{
+margin-top:4px;
+color:#b23b3b;
+border-color:#f0d5d5;
+background:#fbf3f3;
+}
+
+.a11y-reset-all:hover{
+background:#f6e4e4;
+}
+
+@media(max-width:576px){
+
+.a11y-widget{
+right:14px;
+bottom:14px;
+}
+
+.a11y-panel{
+width:240px;
+}
+
+}
+
+/* =========================================================
+   OVERRIDE UKURAN TEKS RELATIF (Aksesibilitas A+/A-)
+========================================================= */
+body.a11y-text-active,
+body.a11y-text-active p,
+body.a11y-text-active a,
+body.a11y-text-active span,
+body.a11y-text-active li,
+body.a11y-text-active label,
+body.a11y-text-active td,
+body.a11y-text-active th,
+body.a11y-text-active input,
+body.a11y-text-active select,
+body.a11y-text-active textarea,
+body.a11y-text-active button,
+body.a11y-text-active .btn-cta-solid,
+body.a11y-text-active .btn-cta-outline {
+  font-size: 1em !important;
+  line-height: 1.6 !important;
+}
+
+body.a11y-text-active h1, 
+body.a11y-text-active .hero-title { font-size: 2.5em !important; line-height: 1.2 !important; }
+body.a11y-text-active h2 { font-size: 2em !important; line-height: 1.3 !important; }
+body.a11y-text-active h3 { font-size: 1.75em !important; line-height: 1.3 !important; }
+body.a11y-text-active h4, body.a11y-text-active .stats-heading h4 { font-size: 1.5em !important; }
+body.a11y-text-active h5, body.a11y-text-active .feature-card-body h5 { font-size: 1.25em !important; }
+body.a11y-text-active h6 { font-size: 1.1em !important; }
+body.a11y-text-active .stats-number { font-size: 2.2em !important; }
+
+body.a11y-text-active small, 
+body.a11y-text-active .text-muted, 
+body.a11y-text-active .stats-label,
+body.a11y-text-active .hero-tagline { font-size: 0.85em !important; }
+
+
+/* ===========================
+   MODE KONTRAS TINGGI (TRUE HIGH CONTRAST)
+   Sesuai standar aksesibilitas WCAG (Hitam & Kuning)
+=========================== */
+body.a11y-high-contrast {
+  background: #000000 !important;
+  color: #FFFF00 !important;
+}
+
+/* Mengubah semua latar belakang section dan card menjadi hitam */
+body.a11y-high-contrast .landing-nav,
+body.a11y-high-contrast .hero-section,
+body.a11y-high-contrast .feature-section,
+body.a11y-high-contrast .stats-section,
+body.a11y-high-contrast .stats-band,
+body.a11y-high-contrast .cta-section,
+body.a11y-high-contrast .cta-band,
+body.a11y-high-contrast .landing-section,
+body.a11y-high-contrast .landing-card,
+body.a11y-high-contrast .feature-card,
+body.a11y-high-contrast .news-card,
+body.a11y-high-contrast .regulasi-card,
+body.a11y-high-contrast .landing-footer,
+body.a11y-high-contrast .visitor-stats-band,
+body.a11y-high-contrast .mobile-nav-panel {
+  background: #000000 !important;
+  border: 1px solid #FFFF00 !important;
+  box-shadow: none !important;
+}
+
+/* Mengubah semua warna teks menjadi kuning terang */
+body.a11y-high-contrast h1, 
+body.a11y-high-contrast h2, 
+body.a11y-high-contrast h3, 
+body.a11y-high-contrast h4, 
+body.a11y-high-contrast h5, 
+body.a11y-high-contrast h6,
+body.a11y-high-contrast p,
+body.a11y-high-contrast span,
+body.a11y-high-contrast div,
+body.a11y-high-contrast li,
+body.a11y-high-contrast td,
+body.a11y-high-contrast th,
+body.a11y-high-contrast label,
+body.a11y-high-contrast strong,
+body.a11y-high-contrast .text-muted,
+body.a11y-high-contrast .text-success,
+body.a11y-high-contrast .text-danger,
+body.a11y-high-contrast .text-warning {
+  color: #FFFF00 !important;
+}
+
+/* Tautan (Link) menjadi warna Cyan agar beda dari teks biasa */
+body.a11y-high-contrast a {
+  color: #00FFFF !important;
+  text-decoration: underline !important;
+}
+
+/* Tombol-tombol menjadi Kuning dengan teks Hitam */
+body.a11y-high-contrast button,
+body.a11y-high-contrast .btn,
+body.a11y-high-contrast .btn-cta-solid,
+body.a11y-high-contrast .btn-cta-outline,
+body.a11y-high-contrast .btn-landing-login {
+  background-color: #FFFF00 !important;
+  color: #000000 !important;
+  border: 2px solid #FFFF00 !important;
+  font-weight: 900 !important;
+}
+
+/* Input Form */
+body.a11y-high-contrast input,
+body.a11y-high-contrast select,
+body.a11y-high-contrast textarea {
+  background-color: #000000 !important;
+  color: #FFFF00 !important;
+  border: 2px solid #FFFF00 !important;
+}
+body.a11y-high-contrast input::placeholder,
+body.a11y-high-contrast textarea::placeholder {
+  color: #888800 !important;
+}
+
+/* ===========================
+   1. MODE GELAP (INVERT)
+=========================== */
+body.a11y-dark-mode {
+  filter: invert(1) hue-rotate(180deg);
+  background: #fff;
+}
+body.a11y-dark-mode img, 
+body.a11y-dark-mode .a11y-toggle-btn, 
+body.a11y-dark-mode .a11y-panel {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* ===========================
+   2. MODE KONTRAS TINGGI (WCAG Hitam & Kuning)
+=========================== */
+body.a11y-high-contrast { background: #000000 !important; color: #FFFF00 !important; }
+body.a11y-high-contrast .landing-nav, body.a11y-high-contrast .hero-section, body.a11y-high-contrast .feature-section, body.a11y-high-contrast .stats-section, body.a11y-high-contrast .stats-band, body.a11y-high-contrast .cta-section, body.a11y-high-contrast .cta-band, body.a11y-high-contrast .landing-section, body.a11y-high-contrast .landing-card, body.a11y-high-contrast .feature-card, body.a11y-high-contrast .news-card, body.a11y-high-contrast .regulasi-card, body.a11y-high-contrast .landing-footer, body.a11y-high-contrast .visitor-stats-band, body.a11y-high-contrast .mobile-nav-panel { background: #000000 !important; border: 1px solid #FFFF00 !important; box-shadow: none !important; }
+body.a11y-high-contrast h1, body.a11y-high-contrast h2, body.a11y-high-contrast h3, body.a11y-high-contrast h4, body.a11y-high-contrast h5, body.a11y-high-contrast h6, body.a11y-high-contrast p, body.a11y-high-contrast span, body.a11y-high-contrast div, body.a11y-high-contrast li, body.a11y-high-contrast td, body.a11y-high-contrast th, body.a11y-high-contrast label, body.a11y-high-contrast strong, body.a11y-high-contrast .text-muted, body.a11y-high-contrast .text-success, body.a11y-high-contrast .text-danger, body.a11y-high-contrast .text-warning { color: #FFFF00 !important; }
+body.a11y-high-contrast a { color: #00FFFF !important; text-decoration: underline !important; }
+body.a11y-high-contrast button, body.a11y-high-contrast .btn, body.a11y-high-contrast .btn-cta-solid, body.a11y-high-contrast .btn-cta-outline, body.a11y-high-contrast .btn-landing-login { background-color: #FFFF00 !important; color: #000000 !important; border: 2px solid #FFFF00 !important; font-weight: 900 !important; }
+body.a11y-high-contrast input, body.a11y-high-contrast select, body.a11y-high-contrast textarea { background-color: #000000 !important; color: #FFFF00 !important; border: 2px solid #FFFF00 !important; }
+body.a11y-high-contrast input::placeholder, body.a11y-high-contrast textarea::placeholder { color: #888800 !important; }
+body.a11y-high-contrast .a11y-widget .a11y-toggle-btn { background-color: #FFFF00 !important; color: #000000 !important; border: 3px solid #000000 !important; }
+body.a11y-high-contrast .a11y-panel { background-color: #000000 !important; border: 3px solid #FFFF00 !important; }
+body.a11y-high-contrast .a11y-btn { background-color: #000000 !important; color: #FFFF00 !important; border: 1px solid #FFFF00 !important; }
+body.a11y-high-contrast .a11y-btn-main { background-color: #FFFF00 !important; color: #000000 !important; }
+body.a11y-high-contrast .a11y-switch-slider { background-color: #333333 !important; border: 1px solid #FFFF00 !important; }
+body.a11y-high-contrast .a11y-switch input:checked + .a11y-switch-slider { background-color: #FFFF00 !important; }
+body.a11y-high-contrast .a11y-switch input:checked + .a11y-switch-slider::before { background-color: #000000 !important; }
+
+/* ===========================
+   3. MODE HITAM PUTIH (GRAYSCALE)
+=========================== */
+body.a11y-grayscale {
+  filter: grayscale(100%);
+}
+
+/* ===========================
+   GARIS BAWAH TAUTAN
+=========================== */
+
+body.a11y-underline-links a{
+text-decoration:underline !important;
+text-underline-offset:3px;
+}
+
+
+/* ===========================
+   LOMPAT KE KONTEN UTAMA
+   (untuk pengguna keyboard & screen reader)
+=========================== */
+
+.skip-to-content{
+position:absolute;
+left:12px;
+top:-60px;
+background:#0d2420;
+color:white;
+padding:12px 20px;
+border-radius:8px;
+font-weight:700;
+font-size:14px;
+text-decoration:none;
+z-index:2000;
+transition:top .2s ease;
+}
+
+.skip-to-content:focus{
+top:12px;
+color:white;
+outline:3px solid #37a25c;
+outline-offset:2px;
+}
+
+
+/* ===========================
+   INDIKATOR FOKUS KEYBOARD
+   (agar navigasi tanpa mouse tetap terlihat jelas)
+=========================== */
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+.menu button:focus-visible,
+.landing-nav-links a:focus-visible{
+outline:3px solid #37a25c !important;
+outline-offset:2px !important;
+}
+
+.visually-hidden{
+position:absolute !important;
+width:1px !important;
+height:1px !important;
+padding:0 !important;
+margin:-1px !important;
+overflow:hidden !important;
+clip:rect(0,0,0,0) !important;
+white-space:nowrap !important;
+border:0 !important;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<!-- LINK LOMPAT KE KONTEN UTAMA (UNTUK PENGGUNA KEYBOARD/SCREEN READER) -->
+<a href="#mainKonten" class="skip-to-content">Lompat ke konten utama</a>
+
+<!-- OVERLAY LOADING -->
+<div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,60,55,0.85); z-index:9999; flex-direction:column; align-items:center; justify-content:center; color:white; backdrop-filter: blur(4px);">
+  <div class="spinner-border text-light" role="status" style="width: 4rem; height: 4rem; border-width: 0.4em;"></div>
+  <h4 class="mt-4 fw-bold">Memproses Laporan...</h4>
+  <p class="text-center opacity-75">Sistem sedang mengunggah bukti foto dan mengenkripsi data Anda.<br>Mohon jangan menutup halaman ini.</p>
+</div>
+
+<!-- WADAH PESAN SUKSES DI ATAS -->
+<div id="topAlertContainer" role="status" aria-live="polite" style="position: fixed; top: 90px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 650px; z-index: 1050;"></div>
+
+<div id="landingPage">
+
+<!-- ==================================================
+     WIDGET AKSESIBILITAS SUARA (UNTUK PENYANDANG DISABILITAS)
+================================================== -->
+<div id="a11yWidget" class="a11y-widget">
+
+<button type="button" class="a11y-toggle-btn" id="a11yToggleBtn" onclick="toggleA11yPanel()" aria-label="Buka atau tutup panel aksesibilitas" aria-expanded="false" aria-controls="a11yPanel">
+<i class="bi bi-universal-access-circle" aria-hidden="true"></i>
+</button>
+
+<div class="a11y-panel" id="a11yPanel">
+
+<div class="a11y-panel-title">
+<i class="bi bi-universal-access-circle"></i> Aksesibilitas
+</div>
+<p class="a11y-panel-desc">Fitur bantu untuk pengguna disabilitas (netra, low vision, dan lainnya).</p>
+
+<div class="a11y-section-label">Pembaca Suara</div>
+
+<button type="button" class="a11y-btn a11y-btn-main" id="a11yReadBtn" onclick="bacakanHalaman()">
+<i class="bi bi-volume-up-fill"></i> Bacakan Halaman Ini
+</button>
+
+<div class="a11y-btn-row">
+<button type="button" class="a11y-btn" id="a11yPauseBtn" onclick="jedaLanjutSuara()">
+<i class="bi bi-pause-fill"></i> Jeda
+</button>
+<button type="button" class="a11y-btn" onclick="berhentiSuara()">
+<i class="bi bi-stop-fill"></i> Berhenti
+</button>
+</div>
+
+<div class="a11y-speed-row">
+<label for="a11ySpeed">Kecepatan Suara</label>
+<input type="range" id="a11ySpeed" min="0.6" max="1.4" step="0.1" value="1">
+</div>
+
+<div class="a11y-status" id="a11yStatus" role="status" aria-live="polite">Siap membacakan konten halaman.</div>
+
+<hr class="a11y-divider">
+
+<div class="a11y-section-label">Ukuran Teks</div>
+
+<div class="a11y-btn-row">
+<button type="button" class="a11y-btn" onclick="ubahUkuranTeks(-1)" aria-label="Perkecil ukuran teks">
+<i class="bi bi-dash-lg"></i> A
+</button>
+<button type="button" class="a11y-btn" onclick="resetUkuranTeks()" aria-label="Ukuran teks normal">
+Normal
+</button>
+<button type="button" class="a11y-btn" onclick="ubahUkuranTeks(1)" aria-label="Perbesar ukuran teks">
+<i class="bi bi-plus-lg"></i> A
+</button>
+</div>
+
+<hr class="a11y-divider">
+
+<div class="a11y-section-label">Tampilan</div>
+
+<div class="a11y-toggle-row">
+  <span><i class="bi bi-moon-stars"></i> Mode Gelap</span>
+  <label class="a11y-switch">
+    <input type="checkbox" id="a11yDarkSwitch" onchange="toggleTemaVisual('dark')">
+    <span class="a11y-switch-slider"></span>
+  </label>
+</div>
+
+<div class="a11y-toggle-row">
+  <span><i class="bi bi-circle-half"></i> Kontras Tinggi</span>
+  <label class="a11y-switch">
+    <input type="checkbox" id="a11yKontrasSwitch" onchange="toggleTemaVisual('high-contrast')">
+    <span class="a11y-switch-slider"></span>
+  </label>
+</div>
+
+<div class="a11y-toggle-row">
+  <span><i class="bi bi-droplet-half"></i> Hitam Putih</span>
+  <label class="a11y-switch">
+    <input type="checkbox" id="a11yGrayscaleSwitch" onchange="toggleTemaVisual('grayscale')">
+    <span class="a11y-switch-slider"></span>
+  </label>
+</div>
+
+<div class="a11y-toggle-row">
+  <span><i class="bi bi-type-underline"></i> Garis Bawah Tautan</span>
+  <label class="a11y-switch">
+    <input type="checkbox" id="a11yUnderlineSwitch" onchange="toggleGarisBawahTautan()">
+    <span class="a11y-switch-slider"></span>
+  </label>
+</div>
+
+<button type="button" class="a11y-btn a11y-reset-all" onclick="resetSemuaAksesibilitas()">
+  <i class="bi bi-arrow-counterclockwise"></i> Reset Semua Pengaturan
+</button>
+
+</div>
+</div>
+
+<div class="top-info-bar">
+  <i class="bi bi-calendar3"></i>
+  <span id="topInfoDate">Memuat tanggal...</span>
+  <span class="top-info-sep">•</span>
+  <i class="bi bi-clock"></i>
+  <span id="topInfoTime">--:--:--</span>
+</div>
+
+<nav class="landing-nav" aria-label="Navigasi utama">
+
+<div class="brand">
+
+<div class="brand-icon" style="width:42px;height:42px;font-size:20px;">
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/d/dc/Lambang_Kabupaten_Banyumas.png" alt="Logo Kabupaten Banyumas" style="width:100%;height:100%;object-fit:contain;border-radius:8px;">
+
+</div>
+
+<div>
+
+<h4>SIGAR</h4>
+
+<small>Sistem Informasi Gratifikasi, Aduan, dan Respons</small>
+
+</div>
+
+</div>
+
+
+<div class="landing-nav-links d-none d-lg-flex" id="landingNavLinks">
+
+<a href="#landing-beranda" class="nav-active">Beranda</a>
+
+<a href="#landing-lapor">Lapor Gratifikasi</a>
+
+<a href="#landing-cek">Cek Status</a>
+
+<a href="#landing-regulasi">Regulasi & Hukum</a>
+
+<a href="#landing-berita">Edukasi & Informasi</a>
+
+</div>
+
+
+<div class="nav-right">
+
+<button type="button" class="nav-toggle-btn d-lg-none" onclick="toggleMobileNav()" aria-label="Buka menu">
+<i class="bi bi-list"></i>
+</button>
+
+</div>
+
+</nav>
+
+<div class="mobile-nav-panel" id="mobileNavPanel">
+
+<a href="#landing-beranda" onclick="closeMobileNav()">Beranda</a>
+
+<a href="#landing-lapor" onclick="closeMobileNav()">Lapor Gratifikasi</a>
+
+<a href="#landing-cek" onclick="closeMobileNav()">Cek Status</a>
+
+<a href="#landing-regulasi" onclick="closeMobileNav()">Regulasi & Hukum</a>
+
+<a href="#landing-berita" onclick="closeMobileNav()">Edukasi & Informasi</a>
+
+</div>
+
+
+<main id="mainKonten" tabindex="-1">
+
+<header class="hero-section" id="landing-beranda">
+
+<div class="hero-grid">
+
+<div class="hero-content">
+
+<span class="badge-pill"><i class="bi bi-shield-check"></i> Laporkan Gratifikasi, Wujudkan Integritas</span>
+
+<h1 class="hero-title">
+Bersama Wujudkan
+<span class="text-accent">Pelayanan Bersih</span>
+Tanpa Gratifikasi
+</h1>
+
+<p class="hero-tagline">
+"Satu Aplikasi untuk Edukasi, Pelaporan, Monitoring, dan Pengendalian Gratifikasi."
+</p>
+
+<p class="hero-desc">
+SIGAR adalah kanal resmi Dinas Kesehatan dan Keluarga Berencana Kabupaten Banyumas untuk melaporkan dan memantau tindak lanjut dugaan gratifikasi secara aman, cepat, dan transparan.
+</p>
+
+<div class="hero-actions-new">
+
+<a href="#landing-lapor" class="btn-cta-solid">
+<i class="bi bi-file-earmark-plus"></i>
+Laporkan Sekarang
+</a>
+
+<a href="#landing-cek" class="btn-cta-outline">
+<i class="bi bi-search"></i>
+Cek Status Laporan
+</a>
+
+</div>
+
+<div class="hero-chips">
+
+<span><i class="bi bi-shield-lock"></i> Identitas Bisa Dirahasiakan</span>
+
+<span><i class="bi bi-eye"></i> Proses Transparan</span>
+
+<span><i class="bi bi-lightning-charge"></i> Ditindaklanjuti Cepat</span>
+
+</div>
+
+</div>
+
+
+<div class="hero-illustration">
+
+<!-- GANTI src DI BAWAH INI DENGAN ASSET ILUSTRASI ANDA -->
+<img src="https://drive.google.com/thumbnail?id=15IQSEJY3dP4oVSdBoDMZ6KfR3AF6i9pe&sz=w1000" alt="Ilustrasi SIGAR" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+<span class="placeholder-note" style="display:none;"></span>
+
+</div>
+
+</div>
+
+</header>
+
+
+<section class="feature-section">
+
+<div class="feature-grid">
+
+<div class="feature-card">
+<div class="feature-icon">
+<!-- GANTI src DI BAWAH INI DENGAN ASSET ICON ANDA -->
+<img src="https://drive.google.com/thumbnail?id=1tM5vV1DxKG8nBFa8q5CsTTZvu3pTwzee&sz=w1000" alt="Aman & Rahasia" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+<i class="bi bi-shield-lock" style="display:none;"></i>
+</div>
+<div class="feature-card-body">
+<h5>Aman & Rahasia</h5>
+<p>Identitas pelapor dilindungi sesuai ketentuan yang berlaku.</p>
+<span class="feature-underline"></span>
+</div>
+</div>
+
+<div class="feature-card">
+<div class="feature-icon">
+<!-- GANTI src DI BAWAH INI DENGAN ASSET ICON ANDA -->
+<img src="https://drive.google.com/thumbnail?id=1-nXb0HG1bZSIhy-Up4iw0yRBmfLhKbE1&sz=w1000" alt="Mudah" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+<i class="bi bi-file-earmark-check" style="display:none;"></i>
+</div>
+<div class="feature-card-body">
+<h5>Mudah</h5>
+<p>Proses pelaporan sederhana dan dapat dilakukan kapan saja.</p>
+<span class="feature-underline"></span>
+</div>
+</div>
+
+<div class="feature-card">
+<div class="feature-icon">
+<!-- GANTI src DI BAWAH INI DENGAN ASSET ICON ANDA -->
+<img src="https://drive.google.com/thumbnail?id=1LdZ_92Nqa0ytjTXV6KLo66dMvuORPzDa&sz=w1000" alt="Responsif" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+<i class="bi bi-check-circle" style="display:none;"></i>
+</div>
+<div class="feature-card-body">
+<h5>Responsif</h5>
+<p>Laporan Anda akan ditindaklanjuti secara profesional dan objektif.</p>
+<span class="feature-underline"></span>
+</div>
+</div>
+
+<div class="feature-card">
+<div class="feature-icon">
+<!-- GANTI src DI BAWAH INI DENGAN ASSET ICON ANDA -->
+<img src="https://drive.google.com/thumbnail?id=1l6H6GlMPOf1FnMiX8i9Xq0MhwfD_ebM3&sz=w1000" alt="Bersama Berintegritas" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+<i class="bi bi-heart" style="display:none;"></i>
+</div>
+<div class="feature-card-body">
+<h5>Bersama Berintegritas</h5>
+<p>Mari ciptakan lingkungan kerja yang bersih, jujur, dan bebas dari gratifikasi.</p>
+<span class="feature-underline"></span>
+</div>
+</div>
+
+</div>
+
+</section>
+
+
+<section class="stats-section">
+
+<div class="stats-band">
+
+<div class="stats-heading">
+<h4>SIGAR dalam Angka</h4>
+<p>Data laporan gratifikasi yang telah dikelola</p>
+</div>
+<div class="stats-items">
+
+<div class="stats-item">
+<div class="stats-icon">
+<!-- GANTI src DI BAWAH INI DENGAN ASSET ICON ANDA -->
+<img src="https://drive.google.com/thumbnail?id=1gWFexTqDrzihCHNjzOuoLoHEy45Z9XQb&sz=w1000" alt="Total Laporan" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+<i class="bi bi-file-earmark-text" style="display:none;"></i>
+</div>
+<div>
+<div class="stats-number" id="statPublikTotal">—</div>
+<div class="stats-label">Total Laporan</div>
+</div>
+</div>
+
+<div class="stats-item">
+<div class="stats-icon">
+<!-- GANTI src DI BAWAH INI DENGAN ASSET ICON ANDA -->
+<img src="https://drive.google.com/thumbnail?id=1-nXb0HG1bZSIhy-Up4iw0yRBmfLhKbE1&sz=w1000" alt="Terverifikasi" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+<i class="bi bi-check-circle" style="display:none;"></i>
+</div>
+<div>
+<div class="stats-number" id="statPublikSelesai">—</div>
+<div class="stats-label">Terverifikasi</div>
+</div>
+</div>
+
+<div class="stats-item">
+<div class="stats-icon">
+<!-- GANTI src DI BAWAH INI DENGAN ASSET ICON ANDA -->
+<img src="https://drive.google.com/thumbnail?id=1jCV6h0S0QZtaRKhK82x9f88WnnTJP7HT&sz=w1000" alt="Belum Terverifikasi" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+<i class="bi bi-hourglass-split" style="display:none;"></i>
+</div>
+<div>
+<div class="stats-number" id="statPublikProses">—</div>
+<div class="stats-label">Belum Terverifikasi</div>
+</div>
+</div>
+
+<div class="stats-item">
+<div class="stats-icon">
+<!-- GANTI src DI BAWAH INI DENGAN ASSET ICON ANDA -->
+<img src="https://drive.google.com/thumbnail?id=1LdZ_92Nqa0ytjTXV6KLo66dMvuORPzDa&sz=w1000" alt="Komitmen Tolak Gratifikasi" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+<i class="bi bi-shield-check" style="display:none;"></i>
+</div>
+<div>
+<div class="stats-number">100%</div>
+<div class="stats-label">Komitmen Tolak Gratifikasi</div>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="cta-section">
+    <div class="cta-band">
+
+        <div class="cta-message">
+            <div class="cta-icon">
+                <img src="https://drive.google.com/thumbnail?id=1LdZ_92Nqa0ytjTXV6KLo66dMvuORPzDa&sz=w1000" alt="">
+            </div>
+
+            <div class="cta-text">
+                <h5>Tolak Gratifikasi, Lawan Korupsi</h5>
+                <p>
+                    Gratifikasi dalam bentuk apapun berpotensi melanggar hukum
+                    dan merusak integritas. Laporkan sekarang untuk perubahan
+                    yang lebih baik.
+                </p>
+            </div>
+        </div>
+
+        <div class="cta-contact-card">
+
+            <h5>Butuh Bantuan atau Konsultasi?</h5>
+            <p>Hubungi kami melalui kanal resmi</p>
+
+            <div class="cta-contact-row">
+    <div class="cta-icon-sm">
+        <i class="bi bi-telephone-fill"></i>
+    </div>
+
+    <div>
+        <small>Hubungi sekarang</small>
+        <strong>(0281) 1234567</strong>
+    </div>
+</div>
+
+        </div>
+
+    </div>
+</section>
+
+
+<section class="landing-section" id="landing-lapor">
+
+<div class="landing-section-title">
+
+<h2>Laporkan Dugaan Gratifikasi</h2>
+
+<p>Isi formulir berikut dengan data yang benar. Anda tidak perlu login untuk mengirimkan laporan.</p>
+
+</div>
+
+
+<div class="landing-card" style="max-width:820px;margin:0 auto;">
+
+<div id="laporPublikAlert" role="status" aria-live="polite"></div>
+
+<form id="formLaporanPublik">
+
+<h5>Data Pelapor</h5>
+
+<hr>
+
+<div class="row">
+
+<div class="col-md-6 mb-3">
+<label for="pubNamaPelapor">Nama Lengkap</label>
+<input type="text" id="pubNamaPelapor" class="form-control" placeholder="Kosongkan jika ingin anonim" >
+</div>
+
+<div class="col-md-6 mb-3">
+<label for="pubInstansi">Instansi/Unit Kerja</label>
+<input type="text" id="pubInstansi" class="form-control" required>
+</div>
+
+<div class="col-md-6 mb-3">
+<label for="pubJabatan">Jabatan</label>
+<input type="text" id="pubJabatan" class="form-control">
+</div>
+
+<div class="col-md-6 mb-3">
+<label for="pubNoTelepon">No. Telepon</label>
+<input type="text" id="pubNoTelepon" class="form-control">
+</div>
+
+<div class="col-md-6 mb-3">
+<label for="pubEmail">Email</label>
+<input type="email" id="pubEmail" class="form-control">
+</div>
+
+<div class="col-md-6 mb-3">
+<label for="pubJenisGratifikasi">Jenis Gratifikasi</label>
+<select id="pubJenisGratifikasi" class="form-select" required>
+<option value="">Pilih Jenis</option>
+<option>Uang</option>
+<option>Parcel/Barang</option>
+<option>Makanan/Minuman</option>
+<option>Fasilitas</option>
+<option>Tiket/Perjalanan</option>
+<option>Diskon/Rabat</option>
+<option>Lainnya</option>
+</select>
+</div>
+
+<div class="col-md-6 mb-3">
+<label for="pubTanggalKejadian">Tanggal Kejadian</label>
+<input type="date" id="pubTanggalKejadian" class="form-control"required>
+</div>
+
+<div class="col-md-6 mb-3">
+<label for="pubLokasiKejadian">Lokasi Kejadian</label>
+<input type="text" id="pubLokasiKejadian" class="form-control"required>
+</div>
+
+<div class="col-md-6 mb-3">
+<label for="pubPihakPemberi">Pihak Pemberi</label>
+<input type="text" id="pubPihakPemberi" class="form-control"required>
+</div>
+
+<div class="col-md-6 mb-3">
+<label for="pubNilaiEstimasi">Nilai Estimasi</label>
+<input type="number" id="pubNilaiEstimasi" class="form-control">
+</div>
+
+<div class="col-12 mb-3">
+<label for="pubUraian">Uraian Gratifikasi</label>
+<textarea id="pubUraian" class="form-control" rows="3" maxlength="700" required></textarea>
+</div>
+
+<div class="col-12 mb-3">
+<label for="pubKronologi">Kronologi</label>
+<textarea id="pubKronologi" class="form-control" rows="5" maxlength="1300" required></textarea>
+</div>
+
+<div class="col-12 mb-3">
+<label for="pubBukti">Upload Bukti</label>
+<input type="file" id="pubBukti" class="form-control" aria-describedby="pubBuktiHelp" required>
+<small class="text-muted" id="pubBuktiHelp">Format file yang diperbolehkan sesuai ketentuan Google Drive.</small>
+</div>
+
+<div class="col-12 mb-3">
+<div class="form-check">
+<input class="form-check-input" type="checkbox" id="pubAnonim">
+<label class="form-check-label" for="pubAnonim">Saya meminta identitas saya dirahasiakan.</label>
+</div>
+</div>
+
+</div>
+
+<button type="submit" class="btn-cta-solid" style="border:0;">
+<i class="bi bi-send"></i>
+Kirim Laporan
+</button>
+
+</form>
+
+</div>
+
+</section>
+
+
+<section class="landing-section" id="landing-cek" style="background:white;">
+
+<div class="landing-section-title">
+
+<h2>Cek Status Laporan</h2>
+
+<p>Masukkan nomor laporan yang Anda terima setelah mengirim laporan untuk melihat status tindak lanjutnya.</p>
+
+</div>
+
+
+<div class="landing-card" style="max-width:650px;margin:0 auto;">
+
+<label for="kodeCek" class="visually-hidden">Nomor Laporan</label>
+
+<div class="input-group" id="cekStatusInputGroup">
+
+<input type="text" id="kodeCek" class="form-control" placeholder="Contoh: LG-2026-00001" aria-label="Masukkan nomor laporan">
+
+<button class="btn-cta-solid" style="border:0;border-radius:0 10px 10px 0;" onclick="cekStatus()">
+<i class="bi bi-search" aria-hidden="true"></i>
+&nbsp;Cek Status
+</button>
+
+</div>
+
+
+<div id="hasilCekStatus" class="cek-result" role="status" aria-live="polite"></div>
+
+</div>
+
+</section>
+
+
+<section class="landing-section" id="landing-regulasi" style="background:white;">
+
+<div class="landing-section-title">
+
+<h2>Regulasi & Dasar Hukum</h2>
+
+<p>Peraturan perundang-undangan dan dasar hukum yang menjadi landasan pencegahan dan pelaporan gratifikasi.</p>
+
+</div>
+
+
+<div class="row g-4" id="regulasiPublikList">
+
+<div class="col-12 text-center py-4">
+<div class="spinner-border text-success" role="status">
+<span class="visually-hidden">Memuat...</span>
+</div>
+<p class="text-muted mt-2">Memuat data regulasi & dasar hukum...</p>
+</div>
+
+</div>
+
+<div class="text-center mt-4" id="regulasiLihatSemuaWrap" style="display:none;">
+  <button type="button" class="btn-cta-outline" style="border:0;background:#f2faf6;" onclick="tampilkanSemuaRegulasi()">
+    Lihat Selengkapnya <i class="bi bi-chevron-down"></i>
+  </button>
+</div>
+
+</section>
+
+
+<section class="landing-section" id="landing-berita">
+
+<div class="landing-section-title">
+
+<h2>Edukasi & Informasi Terbaru</h2>
+
+<p>Edukasi dan informasi resmi seputar pencegahan gratifikasi dari Dinas Kesehatan dan Keluarga Berencana Kabupaten Banyumas.</p>
+
+</div>
+
+
+<div class="row g-4" id="beritaPublikList">
+
+<div class="col-12 text-center py-4">
+<div class="spinner-border text-success" role="status">
+<span class="visually-hidden">Memuat...</span>
+</div>
+<p class="text-muted mt-2">Memuat data edukasi & informasi...</p>
+</div>
+
+</div>
+
+<div class="text-center mt-4" id="beritaLihatSemuaWrap" style="display:none;">
+  <button type="button" class="btn-cta-outline" style="border:0;background:#f2faf6;" onclick="tampilkanSemuaBerita()">
+    Lihat Selengkapnya <i class="bi bi-chevron-down"></i>
+  </button>
+</div>
+
+</section>
+
+
+</main>
+
+
+<footer class="landing-footer">
+
+<div class="footer-top">
+
+<div class="footer-brand">
+
+<div class="footer-logo-row">
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/d/dc/Lambang_Kabupaten_Banyumas.png" alt="Logo Kabupaten Banyumas">
+
+<div>
+<h5>SIGAR</h5>
+<small>Sistem Informasi Gratifikasi, Aduan, dan Respons</small>
+</div>
+
+</div>
+
+<p>
+Kanal resmi Dinas Kesehatan dan Keluarga Berencana Kabupaten Banyumas untuk melaporkan dan memantau tindak lanjut dugaan gratifikasi secara aman, mudah, dan transparan.
+</p>
+
+<div class="footer-social">
+<a href="https://www.instagram.com/dinkesdankbbanyumas?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener" aria-label="Instagram dinkesdankbbanyumas">
+<i class="bi bi-instagram"></i> dinkesdankbbanyumas
+</a>
+<a href="https://youtu.be/_eXMpQRB3Pw?si=YwDtA3Z74bFfig8Q" target="_blank" rel="noopener" aria-label="YouTube Dinkes KB Banyumas">
+<i class="bi bi-youtube"></i> Dinkes KB Banyumas
+</a>
+<a href="https://x.com/BanyumasDinkes" target="_blank" rel="noopener" aria-label="X (Twitter) BanyumasDinkes">
+<i class="bi bi-twitter-x"></i> BanyumasDinkes
+</a>
+<a href="https://www.tiktok.com/@dinas.kesehatan.b?_r=1&_t=ZS-98cS7HaXSVz" target="_blank" rel="noopener" aria-label="TikTok dinas.kesehatan.b">
+<i class="bi bi-tiktok"></i> dinas.kesehatan.b
+</a>
+</div>
+
+</div>
+
+
+<div class="footer-col">
+
+<h6>Tautan Cepat</h6>
+
+<ul class="footer-links">
+<li><a href="#landing-lapor">Lapor Gratifikasi</a></li>
+<li><a href="#landing-cek">Cek Status</a></li>
+<li><a href="#landing-regulasi">Regulasi & Hukum</a></li>
+<li><a href="#landing-berita">Edukasi & Informasi</a></li>
+</ul>
+
+</div>
+
+
+<div class="footer-col">
+
+<h6>Kontak Kami</h6>
+
+<ul class="footer-contact-list">
+<li><i class="bi bi-geo-alt"></i>
+<div class="footer-address-block">
+Jl. RA. Wiryaatmaja No.4 Purwokerto Kode Pos 53131
+<a href="https://maps.app.goo.gl/Bhohpaapq8kocEqu6" target="_blank" rel="noopener" class="footer-maps-link">
+<i class="bi bi-map"></i> Lihat di Google Maps
+</a>
+</div>
+</li>
+<li><i class="bi bi-telephone"></i> Telp : (0281)-632971</li>
+<li><i class="bi bi-printer"></i> Fax : (0281)-631502</li>
+<li><i class="bi bi-envelope"></i> dinkes@banyumaskab.go.id</li>
+</ul>
+
+</div>
+
+
+<div class="footer-col footer-hours">
+
+<h6>Jam Layanan</h6>
+
+<p>
+Senin – Kamis<br>
+07.15 – 15.30 WIB
+</p>
+<p>
+Jumat<br>
+07.15 – 15.15 WIB
+</p>
+
+</div>
+<div class="footer-stats-minimal">
+          <div class="stat-title">Statistik Pengunjung Website</div>
+          
+          <div class="stat-item"><i class="bi bi-calendar-day"></i> Hari Ini: <strong id="visitorHariIni">0</strong></div>
+          <div class="stat-item"><i class="bi bi-calendar-week"></i> Minggu Ini: <strong id="visitorMingguIni">0</strong></div>
+          <div class="stat-item"><i class="bi bi-calendar-month"></i> Bulan Ini: <strong id="visitorBulanIni">0</strong></div>
+          <div class="stat-item"><i class="bi bi-calendar4-range"></i> Tahun Ini: <strong id="visitorTahunIni">0</strong></div>
+          <div class="stat-item"><i class="bi bi-people-fill"></i> Total: <strong id="visitorTotal">0</strong></div>
+        </div>
+</div>        
+
+
+<div class="footer-bottom">
+
+&copy; <span id="footerYear"></span> SIGAR — Dinas Kesehatan dan Keluarga Berencana Kabupaten Banyumas.
+
+<div class="footer-support">
+Supported by <strong>Universitas Amikom Purwokerto</strong>
+</div>
+
+</div>
+
+</footer>
+
+
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+
+/* ==================================================
+LAPOR PUBLIK (LANDING PAGE)
+================================================== */
+document.getElementById('formLaporanPublik').addEventListener('submit', function(e){
+  e.preventDefault();
+
+  // 1. MUNCULKAN ANIMASI LOADING
+  document.getElementById('loadingOverlay').style.display = 'flex';
+
+  const file = document.getElementById('pubBukti').files[0];
+  
+  const data = {
+    username: '',
+    namaPelapor: document.getElementById('pubNamaPelapor').value,
+    instansi: document.getElementById('pubInstansi').value,
+    jabatan: document.getElementById('pubJabatan').value,
+    noTelepon: document.getElementById('pubNoTelepon').value,
+    email: document.getElementById('pubEmail').value,
+    anonim: document.getElementById('pubAnonim').checked,
+    jenisGratifikasi: document.getElementById('pubJenisGratifikasi').value,
+    tanggalKejadian: document.getElementById('pubTanggalKejadian').value,
+    lokasiKejadian: document.getElementById('pubLokasiKejadian').value,
+    pihakPemberi: document.getElementById('pubPihakPemberi').value,
+    nilaiEstimasi: document.getElementById('pubNilaiEstimasi').value,
+    uraian: document.getElementById('pubUraian').value,
+    kronologi: document.getElementById('pubKronologi').value
+  };
+
+  if(file){
+    const reader = new FileReader();
+    reader.onload = function(){
+      data.buktiBase64 = reader.result.split(',')[1];
+      data.buktiNama = file.name;
+      data.buktiType = file.type;
+      kirimLaporanPublik(data);
+    };
+    reader.readAsDataURL(file);
+  } else {
+    kirimLaporanPublik(data);
+  }
+});
+
+function kirimLaporanPublik(data){
+  google.script.run
+    .withSuccessHandler(function(res){
+      // 2. MATIKAN ANIMASI LOADING SAAT SUKSES
+      document.getElementById('loadingOverlay').style.display = 'none';
+
+      if(res.success){
+        // SCROLL OTOMATIS KE PALING ATAS (ANIMASI SMOOTH)
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // PESAN MELAYANG DI PALING ATAS LAYAR
+        const topAlert = document.getElementById('topAlertContainer');
+        if(topAlert) {
+          topAlert.innerHTML =
+            '<div class="alert alert-success alert-dismissible fade show shadow" role="alert">' +
+            '<i class="bi bi-check-circle-fill me-2"></i>' +
+            '<strong>Laporan berhasil dikirim!</strong><br>' +
+            'Nomor Tiket Anda: <span class="badge bg-success fs-6 ms-1">' + res.noLaporan + '</span>' +
+            '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+            '</div>';
+        }
+
+        // KEMBALIKAN PESAN DI ATAS FORM (Seperti semula)
+        document.getElementById('laporPublikAlert').innerHTML =
+          '<div class="alert alert-success">' +
+          '<strong>Laporan berhasil dikirim!</strong><br>' +
+          'Simpan nomor laporan berikut untuk mengecek status tindak lanjutnya:' +
+          '<br><span class="badge bg-success" style="font-size:15px;padding:8px 14px;margin-top:6px;display:inline-block;">' +
+          res.noLaporan +
+          '</span>' +
+          '</div>';
+
+        document.getElementById('formLaporanPublik').reset();
+        document.getElementById('kodeCek').value = res.noLaporan;
+      } else {
+        document.getElementById('laporPublikAlert').innerHTML =
+          '<div class="alert alert-danger">' +
+          (res.message || 'Laporan gagal dikirim.') +
+          '</div>';
+      }
+    })
+    .withFailureHandler(function(err){
+      // 3. MATIKAN ANIMASI LOADING SAAT GAGAL/ERROR
+      document.getElementById('loadingOverlay').style.display = 'none';
+
+      document.getElementById('laporPublikAlert').innerHTML =
+        '<div class="alert alert-danger">' +
+        err.message +
+        '</div>';
+    })
+    .simpanLaporan(data);
+}
+
+
+/* ==================================================
+CEK STATUS LAPORAN (LANDING PAGE)
+================================================== */
+
+function cekStatus(){
+
+const kode =
+document.getElementById(
+'kodeCek'
+).value.trim();
+
+
+const hasilEl =
+document.getElementById(
+'hasilCekStatus'
+);
+
+
+if(!kode){
+
+hasilEl.innerHTML =
+
+'<div class="alert alert-warning mt-3">' +
+
+'Silakan masukkan nomor laporan terlebih dahulu.' +
+
+'</div>';
+
+return;
+
+}
+
+
+hasilEl.innerHTML =
+
+'<div class="text-muted mt-3">' +
+
+'<i class="bi bi-hourglass-split"></i> Mencari data laporan...' +
+
+'</div>';
+
+
+google.script.run
+
+.withSuccessHandler(function(res){
+
+if(!res.ditemukan){
+
+hasilEl.innerHTML =
+
+'<div class="alert alert-danger mt-3">' +
+
+res.message +
+
+'</div>';
+
+return;
+
+}
+
+
+hasilEl.innerHTML =
+
+renderTimeline(
+res
+);
+
+})
+
+.withFailureHandler(function(err){
+
+hasilEl.innerHTML =
+
+'<div class="alert alert-danger mt-3">' +
+
+err.message +
+
+'</div>';
+
+})
+
+.cekStatusLaporan(
+kode
+);
+
+}
+
+
+function renderTimeline(res){
+  const status = String(res.status || '');
+  
+  // Kompatibilitas dengan data lama
+  const isSelesai = status === 'Terverifikasi' || status === 'Selesai';
+  const isDitolak = status === 'Ditolak';
+  const isProses = !isSelesai && !isDitolak;
+
+  const step2Class = isDitolak ? '' : (isProses ? 'current' : 'done');
+  const step3Class = isDitolak ? 'rejected' : (isSelesai ? 'done' : '');
+
+  const step3Icon = isDitolak ? 'bi-x-lg' : 'bi-check-lg';
+  const step3Label = isDitolak ? 'Ditolak' : 'Terverifikasi';
+
+  let html = 
+    '<div class="card-panel">' +
+      '<div class="d-flex justify-content-between flex-wrap mb-2">' +
+        '<div><strong>No. Laporan:</strong> ' + res.noLaporan + '</div>' +
+        '<div><strong>Tanggal Lapor:</strong> ' + res.tanggalLapor + '</div>' +
+      '</div>' +
+      '<div><strong>Jenis:</strong> ' + res.jenis + '</div>' +
+      '<div class="timeline">' +
+        '<div class="timeline-step done">' +
+          '<div class="t-icon"><i class="bi bi-file-earmark-check"></i></div>' +
+          'Laporan Diterima' +
+        '</div>' +
+        '<div class="timeline-step ' + step2Class + '">' +
+          '<div class="t-icon"><i class="bi bi-hourglass-split"></i></div>' +
+          'Belum Terverifikasi' + // Teks Diubah
+        '</div>' +
+        '<div class="timeline-step ' + step3Class + '">' +
+          '<div class="t-icon"><i class="bi ' + step3Icon + '"></i></div>' +
+          step3Label +
+        '</div>' +
+      '</div>';
+
+  if(res.catatan){
+    html += 
+      '<hr>' +
+      '<strong>Catatan Tindak Lanjut:</strong>' +
+      '<p class="mb-0">' + res.catatan + '</p>';
+  }
+  if(res.tanggalTindakLanjut){
+    html += '<small class="text-muted">Diperbarui: ' + res.tanggalTindakLanjut + '</small>';
+  }
+  
+  html += '</div>';
+  return html;
+}
+
+/* ==================================================
+EDUKASI & INFORMASI PUBLIK (LANDING PAGE)
+================================================== */
+
+
+var BERITA_BATAS_AWAL = 6;
+var beritaDataSemua = [];
+var beritaSudahDiperluas = false;
+
+function loadInformasiPublik(){
+
+google.script.run
+
+.withSuccessHandler(function(data){
+
+beritaDataSemua = data || [];
+beritaSudahDiperluas = false;
+renderBeritaPublik();
+
+})
+
+.withFailureHandler(function(err){
+
+document.getElementById(
+'beritaPublikList'
+).innerHTML =
+
+'<p class="text-danger text-center">' +
+
+err.message +
+
+'</p>';
+
+document.getElementById('beritaLihatSemuaWrap').style.display = 'none';
+
+})
+
+.getEdukasi();
+
+}
+
+function renderBeritaPublik(){
+
+  const wadahTombol = document.getElementById('beritaLihatSemuaWrap');
+  const listEl = document.getElementById('beritaPublikList');
+
+  if(beritaDataSemua.length === 0){
+    listEl.innerHTML = '<p class="text-muted text-center">Belum ada edukasi & informasi yang diunggah.</p>';
+    wadahTombol.style.display = 'none';
+    return;
+  }
+
+  const dataDitampilkan = beritaSudahDiperluas
+    ? beritaDataSemua
+    : beritaDataSemua.slice(0, BERITA_BATAS_AWAL);
+
+  window.beritaCardData = dataDitampilkan; // simpan referensi untuk modal
+
+  let html = '';
+
+  dataDitampilkan.forEach(function(item, idx){
+
+    html +=
+    '<div class="col-md-4">' +
+      '<div class="news-card" style="cursor:pointer;" onclick="bukaDetailBerita(' + idx + ')">' +
+        (item.gambar ?
+          '<img src="' + item.gambar + '" class="news-card-img" alt="' + item.judul + '">' :
+          '<div class="news-card-icon"><i class="bi bi-book"></i></div>'
+        ) +
+        '<div class="news-card-body">' +
+          '<h5 class="title-clamp-2">' + item.judul + '</h5>' +
+          '<p class="desc-clamp">' + (item.deskripsi || item.konten || '') + '</p>' +
+          '<small class="text-success fw-bold mt-2" style="font-size:12px;">' +
+            'Baca Selengkapnya' +
+          '</small>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+  });
+
+  listEl.innerHTML = html;
+
+  wadahTombol.style.display =
+    (!beritaSudahDiperluas && beritaDataSemua.length > BERITA_BATAS_AWAL)
+      ? 'block'
+      : 'none';
+}
+
+function bukaDetailBerita(idx){
+  const item = window.beritaCardData[idx];
+  if(!item) return;
+
+  document.getElementById('modalEdukasiJudul').innerText = item.judul || '';
+  document.getElementById('modalEdukasiGambar').innerHTML = item.gambar
+    ? '<img src="' + item.gambar + '" class="img-fluid rounded mb-3" alt="' + item.judul + '">'
+    : '';
+  document.getElementById('modalEdukasiIsi').innerHTML =
+    '<p>' + (item.deskripsi || '') + '</p>' +
+    (item.konten ? '<p>' + item.konten + '</p>' : '');
+
+  const modal = new bootstrap.Modal(document.getElementById('modalEdukasiDetail'));
+  modal.show();
+}
+
+function tampilkanSemuaBerita(){
+  beritaSudahDiperluas = true;
+  renderBeritaPublik();
+}
+
+
+/* ==================================================
+REGULASI & DASAR HUKUM PUBLIK (LANDING PAGE)
+================================================== */
+
+var REGULASI_BATAS_AWAL = 4;
+var regulasiDataSemuaPublik = [];
+var regulasiSudahDiperluas = false;
+
+function loadRegulasiPublik(){
+
+google.script.run
+
+.withSuccessHandler(function(data){
+
+regulasiDataSemuaPublik = data || [];
+regulasiSudahDiperluas = false;
+renderRegulasiPublik();
+
+})
+
+.withFailureHandler(function(err){
+
+document.getElementById(
+'regulasiPublikList'
+).innerHTML =
+
+'<p class="text-danger text-center">' +
+
+err.message +
+
+'</p>';
+
+document.getElementById('regulasiLihatSemuaWrap').style.display = 'none';
+
+})
+
+.getRegulasi();
+
+}
+
+function renderRegulasiPublik(){
+
+  const wadahTombol = document.getElementById('regulasiLihatSemuaWrap');
+  const listEl = document.getElementById('regulasiPublikList');
+
+  if(regulasiDataSemuaPublik.length === 0){
+    listEl.innerHTML = '<p class="text-muted text-center">Belum ada regulasi & dasar hukum yang diunggah.</p>';
+    wadahTombol.style.display = 'none';
+    return;
+  }
+
+  const dataDitampilkan = regulasiSudahDiperluas
+    ? regulasiDataSemuaPublik
+    : regulasiDataSemuaPublik.slice(0, REGULASI_BATAS_AWAL);
+
+  let html = '';
+
+  dataDitampilkan.forEach(function(item){
+
+  html +=
+
+  '<div class="col-md-6">' +
+
+  '<div class="regulasi-card">' +
+
+  '<div class="regulasi-card-icon">' +
+  '<i class="bi bi-file-earmark-text"></i>' +
+  '</div>' +
+
+  '<div class="regulasi-card-body">' +
+
+  '<h5>' +
+
+  item.judul +
+
+  '</h5>' +
+
+  '<p class="desc-clamp">' +
+
+  (item.deskripsi || '') +
+
+  '</p>' +
+
+  (item.link ?
+  '<a href="' + item.link + '" target="_blank" rel="noopener">' +
+  '<i class="bi bi-box-arrow-up-right"></i>&nbsp;Lihat Selengkapnya' +
+  '</a>' :
+  '') +
+
+  '</div>' +
+
+  '</div>' +
+
+  '</div>';
+
+  });
+
+  listEl.innerHTML = html;
+
+  wadahTombol.style.display =
+    (!regulasiSudahDiperluas && regulasiDataSemuaPublik.length > REGULASI_BATAS_AWAL)
+      ? 'block'
+      : 'none';
+
+}
+
+function tampilkanSemuaRegulasi(){
+  regulasiSudahDiperluas = true;
+  renderRegulasiPublik();
+}
+
+
+
+/* ==================================================
+STATISTIK PUBLIK (SAMA DENGAN DATA DASHBOARD ADMIN)
+================================================== */
+
+function loadStatistikPublik(){
+
+google.script.run
+
+.withSuccessHandler(function(data){
+
+if(!data) return;
+
+const elTotal = document.getElementById('statPublikTotal');
+const elSelesai = document.getElementById('statPublikSelesai');
+const elProses = document.getElementById('statPublikProses');
+
+if(elTotal) elTotal.innerText = data.total;
+if(elSelesai) elSelesai.innerText = data.selesai;
+if(elProses) elProses.innerText = data.proses;
+
+})
+
+.withFailureHandler(function(){
+// Biarkan tampil '—' jika fungsi gagal dipanggil dari halaman publik
+})
+
+.getDashboardData();
+
+}
+
+
+/* ==================================================
+AKSESIBILITAS SUARA (UNTUK PENGGUNA DISABILITAS)
+================================================== */
+
+var a11ySynth = window.speechSynthesis || null;
+var a11yUtterance = null;
+var a11yIsPaused = false;
+
+function initAksesibilitasSuara(){
+
+if(!a11ySynth){
+const btn = document.getElementById('a11yReadBtn');
+const status = document.getElementById('a11yStatus');
+if(btn) btn.disabled = true;
+if(status) status.innerText = 'Fitur suara tidak didukung di perangkat ini.';
+return;
+}
+
+const speedInput = document.getElementById('a11ySpeed');
+if(speedInput){
+speedInput.addEventListener('input', function(){
+if(a11yUtterance){
+berhentiSuara();
+}
+});
+}
+
+}
+
+function toggleA11yPanel(){
+const panel = document.getElementById('a11yPanel');
+const btn = document.getElementById('a11yToggleBtn');
+if(panel) panel.classList.toggle('open');
+if(btn) btn.setAttribute('aria-expanded', panel && panel.classList.contains('open') ? 'true' : 'false');
+}
+
+function kumpulkanTeksHalaman(){
+
+const selectors = [
+'.hero-title',
+'.hero-tagline',
+'.hero-desc',
+'.hero-chips',
+'.feature-card-body h5',
+'.feature-card-body p',
+'.stats-heading h4',
+'.stats-heading p'
+];
+
+let teks = 'Selamat datang di SIGAR, Sistem Informasi Gratifikasi, Aduan, dan Respons, Dinas Kesehatan dan Keluarga Berencana Kabupaten Banyumas. ';
+
+selectors.forEach(function(sel){
+document.querySelectorAll(sel).forEach(function(el){
+const isi = el.innerText.trim();
+if(isi) teks += isi + '. ';
+});
+});
+
+return teks;
+
+}
+
+function bacakanHalaman(){
+
+if(!a11ySynth) return;
+
+berhentiSuara();
+
+const teks = kumpulkanTeksHalaman();
+const speedInput = document.getElementById('a11ySpeed');
+const status = document.getElementById('a11yStatus');
+
+a11yUtterance = new SpeechSynthesisUtterance(teks);
+a11yUtterance.lang = 'id-ID';
+a11yUtterance.rate = speedInput ? parseFloat(speedInput.value) : 1;
+
+a11yUtterance.onstart = function(){
+if(status) status.innerText = 'Sedang membacakan halaman...';
+};
+
+a11yUtterance.onend = function(){
+if(status) status.innerText = 'Pembacaan selesai.';
+a11yIsPaused = false;
+};
+
+a11yUtterance.onerror = function(){
+if(status) status.innerText = 'Pembacaan dihentikan.';
+};
+
+a11ySynth.speak(a11yUtterance);
+
+}
+
+function jedaLanjutSuara(){
+
+if(!a11ySynth || !a11yUtterance) return;
+
+const status = document.getElementById('a11yStatus');
+const pauseBtn = document.getElementById('a11yPauseBtn');
+
+if(!a11yIsPaused && a11ySynth.speaking){
+a11ySynth.pause();
+a11yIsPaused = true;
+if(status) status.innerText = 'Dijeda.';
+if(pauseBtn) pauseBtn.innerHTML = '<i class="bi bi-play-fill"></i> Lanjutkan';
+}
+else if(a11yIsPaused){
+a11ySynth.resume();
+a11yIsPaused = false;
+if(status) status.innerText = 'Sedang membacakan halaman...';
+if(pauseBtn) pauseBtn.innerHTML = '<i class="bi bi-pause-fill"></i> Jeda';
+}
+
+}
+
+function berhentiSuara(){
+
+if(!a11ySynth) return;
+
+a11ySynth.cancel();
+a11yIsPaused = false;
+
+const status = document.getElementById('a11yStatus');
+const pauseBtn = document.getElementById('a11yPauseBtn');
+if(status) status.innerText = 'Siap membacakan konten halaman.';
+if(pauseBtn) pauseBtn.innerHTML = '<i class="bi bi-pause-fill"></i> Jeda';
+
+}
+
+
+/* ==================================================
+UKURAN TEKS (UNTUK PENGGUNA LOW VISION)
+================================================== */
+var A11Y_FONT_MIN = 80;
+var A11Y_FONT_MAX = 160;
+var A11Y_FONT_STEP = 10;
+
+function ubahUkuranTeks(arah){
+  let skala = parseInt(localStorage.getItem('sigar_a11y_fontScale') || '100', 10);
+  skala = skala + (arah * A11Y_FONT_STEP);
+  if(skala < A11Y_FONT_MIN) skala = A11Y_FONT_MIN;
+  if(skala > A11Y_FONT_MAX) skala = A11Y_FONT_MAX;
+  
+  terapkanUkuranTeks(skala);
+  localStorage.setItem('sigar_a11y_fontScale', skala);
+  
+  if(skala !== 100) {
+    document.body.classList.add('a11y-text-active');
+  } else {
+    document.body.classList.remove('a11y-text-active');
+  }
+}
+
+function resetUkuranTeks(){
+  terapkanUkuranTeks(100);
+  localStorage.setItem('sigar_a11y_fontScale', 100);
+  document.body.classList.remove('a11y-text-active');
+}
+
+function terapkanUkuranTeks(skala){
+  document.documentElement.style.fontSize = skala + '%';
+  if (skala !== 100) document.body.classList.add('a11y-text-active');
+}
+
+
+/* ==================================================
+   TEMA VISUAL (MODE GELAP, KONTRAS TINGGI, GRAYSCALE)
+================================================== */
+function toggleTemaVisual(temaDipilih) {
+  const isDark = document.getElementById('a11yDarkSwitch').checked;
+  const isHighContrast = document.getElementById('a11yKontrasSwitch').checked;
+  const isGrayscale = document.getElementById('a11yGrayscaleSwitch').checked;
+
+  document.body.classList.remove('a11y-dark-mode', 'a11y-high-contrast', 'a11y-grayscale');
+
+  if(temaDipilih === 'dark' && isDark) {
+    document.getElementById('a11yKontrasSwitch').checked = false;
+    document.getElementById('a11yGrayscaleSwitch').checked = false;
+    document.body.classList.add('a11y-dark-mode');
+    localStorage.setItem('sigar_a11y_tema', 'dark');
+  } 
+  else if(temaDipilih === 'high-contrast' && isHighContrast) {
+    document.getElementById('a11yDarkSwitch').checked = false;
+    document.getElementById('a11yGrayscaleSwitch').checked = false;
+    document.body.classList.add('a11y-high-contrast');
+    localStorage.setItem('sigar_a11y_tema', 'high-contrast');
+  }
+  else if(temaDipilih === 'grayscale' && isGrayscale) {
+    document.getElementById('a11yDarkSwitch').checked = false;
+    document.getElementById('a11yKontrasSwitch').checked = false;
+    document.body.classList.add('a11y-grayscale');
+    localStorage.setItem('sigar_a11y_tema', 'grayscale');
+  } 
+  else {
+    localStorage.removeItem('sigar_a11y_tema');
+  }
+}
+
+/* ==================================================
+   GARIS BAWAH TAUTAN
+================================================== */
+function toggleGarisBawahTautan(){
+  const aktif = document.body.classList.toggle('a11y-underline-links');
+  localStorage.setItem('sigar_a11y_underlineLinks', aktif ? '1' : '0');
+  const switchEl = document.getElementById('a11yUnderlineSwitch');
+  if(switchEl) switchEl.checked = aktif;
+}
+
+/* ==================================================
+   RESET SEMUA PENGATURAN AKSESIBILITAS
+================================================== */
+function resetSemuaAksesibilitas(){
+  resetUkuranTeks();
+  document.body.classList.remove('a11y-dark-mode', 'a11y-high-contrast', 'a11y-grayscale', 'a11y-underline-links');
+  
+  localStorage.removeItem('sigar_a11y_tema');
+  localStorage.setItem('sigar_a11y_underlineLinks', '0');
+  
+  if(document.getElementById('a11yDarkSwitch')) document.getElementById('a11yDarkSwitch').checked = false;
+  if(document.getElementById('a11yKontrasSwitch')) document.getElementById('a11yKontrasSwitch').checked = false;
+  if(document.getElementById('a11yGrayscaleSwitch')) document.getElementById('a11yGrayscaleSwitch').checked = false;
+  if(document.getElementById('a11yUnderlineSwitch')) document.getElementById('a11yUnderlineSwitch').checked = false;
+  
+  berhentiSuara();
+}
+
+/* ==================================================
+   MEMUAT PREFERENSI AKSESIBILITAS SAAT HALAMAN DIBUKA
+================================================== */
+function muatPreferensiAksesibilitas(){
+  try{
+    const skala = parseInt(localStorage.getItem('sigar_a11y_fontScale') || '100', 10);
+    terapkanUkuranTeks(skala);
+    
+    const tema = localStorage.getItem('sigar_a11y_tema');
+    if(tema === 'dark') {
+      document.body.classList.add('a11y-dark-mode');
+      if(document.getElementById('a11yDarkSwitch')) document.getElementById('a11yDarkSwitch').checked = true;
+    } else if(tema === 'high-contrast') {
+      document.body.classList.add('a11y-high-contrast');
+      if(document.getElementById('a11yKontrasSwitch')) document.getElementById('a11yKontrasSwitch').checked = true;
+    } else if(tema === 'grayscale') {
+      document.body.classList.add('a11y-grayscale');
+      if(document.getElementById('a11yGrayscaleSwitch')) document.getElementById('a11yGrayscaleSwitch').checked = true;
+    }
+
+    const underlineAktif = localStorage.getItem('sigar_a11y_underlineLinks') === '1';
+    if(underlineAktif){
+      document.body.classList.add('a11y-underline-links');
+      const underlineSwitch = document.getElementById('a11yUnderlineSwitch');
+      if(underlineSwitch) underlineSwitch.checked = true;
+    }
+  }catch(e){}
+}
+
+
+/* ==================================================
+STATISTIK PENGUNJUNG WEBSITE (LANDING PAGE)
+================================================== */
+
+function loadStatistikPengunjung(){
+
+google.script.run
+
+.withSuccessHandler(function(data){
+
+if(!data) return;
+
+const map = {
+  visitorHariIni: data.hariIni,
+  visitorMingguIni: data.mingguIni,
+  visitorBulanIni: data.bulanIni,
+  visitorTahunIni: data.tahunIni,
+  visitorTotal: data.total
+};
+
+Object.keys(map).forEach(function(id){
+const el = document.getElementById(id);
+if(el) el.innerText = map[id];
+});
+
+})
+
+.withFailureHandler(function(){
+// Biarkan tampil '—' jika gagal dimuat
+})
+
+.getStatistikPengunjung();
+
+}
+
+
+/* ==================================================
+MENU MOBILE
+================================================== */
+
+function toggleMobileNav(){
+document.getElementById('mobileNavPanel').classList.toggle('open');
+}
+
+function closeMobileNav(){
+document.getElementById('mobileNavPanel').classList.remove('open');
+}
+
+/* ==================================================
+SCROLL SPY NAVBAR
+================================================== */
+
+function initScrollSpy(){
+
+const sections = document.querySelectorAll('.hero-section[id], .landing-section[id]');
+const navLinks = document.querySelectorAll('.landing-nav-links a[href^="#"]');
+
+if(!sections.length || !navLinks.length) return;
+
+const setActive = function(id){
+navLinks.forEach(function(link){
+link.classList.toggle('nav-active', link.getAttribute('href') === '#' + id);
+});
+};
+
+const observer = new IntersectionObserver(function(entries){
+entries.forEach(function(entry){
+if(entry.isIntersecting){
+setActive(entry.target.id);
+}
+});
+}, {
+rootMargin: '-40% 0px -55% 0px',
+threshold: 0
+});
+
+sections.forEach(function(section){
+observer.observe(section);
+});
+
+}
+
+function perbaruiWaktuSekarang(){
+  const now = new Date();
+  const teksTanggal = now.toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  const teksJam = now.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false }) + ' WIB';
+  const elTanggal = document.getElementById('topInfoDate');
+  const elJam = document.getElementById('topInfoTime');
+  if(elTanggal) elTanggal.innerText = teksTanggal;
+  if(elJam) elJam.innerText = teksJam;
+}
+/* ==================================================
+AUTO LOAD
+================================================== */
+
+window.onload =
+function(){
+
+const yearEl =
+document.getElementById(
+'footerYear'
+);
+
+if(yearEl){
+
+yearEl.innerText =
+new Date().getFullYear();
+
+}
+
+perbaruiWaktuSekarang();
+setInterval(perbaruiWaktuSekarang, 1000);
+
+loadInformasiPublik();
+
+loadRegulasiPublik();
+
+loadStatistikPublik();
+
+loadStatistikPengunjung();
+
+initScrollSpy();
+
+initAksesibilitasSuara();
+
+muatPreferensiAksesibilitas();
+
+};
+
+</script>
+
+<div class="modal fade" id="modalEdukasiDetail" tabindex="-1" aria-labelledby="modalEdukasiJudul" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content" style="border-radius:16px;border:0;">
+      <div class="modal-header" style="border-bottom:1px solid #e2e9eb;">
+        <h5 class="modal-title fw-bold" id="modalEdukasiJudul"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+      </div>
+      <div class="modal-body">
+        <div id="modalEdukasiGambar"></div>
+        <div id="modalEdukasiIsi" style="line-height:1.7;color:#3b4a4c;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+
+</html>
